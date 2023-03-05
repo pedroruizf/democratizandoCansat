@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="exe_highlighter.css" />
 <link rel="stylesheet" type="text/css" href="content.css" />
 <link rel="stylesheet" type="text/css" href="nav.css" />
 <meta http-equiv="content-type" content="text/html;  charset=utf-8" />
@@ -12,6 +13,7 @@
 <meta name="generator" content="eXeLearning 2.8 - exelearning.net" />
 <!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
 <script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="exe_highlighter.js"></script>
 <script type="text/javascript" src="common_i18n.js"></script>
 <script type="text/javascript" src="common.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,6 +41,7 @@
       <li><a href="ide_de_arduino.html" class="daddy">IDE de Arduino</a>
       <ul class="other-section">
          <li><a href="comunicaciones_lora.html" class="no-ch">Comunicaciones LoRa</a></li>
+         <li><a href="microsd.html" class="no-ch">MicroSD</a></li>
       </ul>
       </li>
       <li class="current-page-parent"><a href="arduin_oblocks.html" class="current-page-parent daddy">Arduin oblocks</a>
@@ -67,18 +70,93 @@
 <p>2. Implementamos el siguiente código:</p>
 <p><img src="programa_arduinoblocks_sensores.png" alt="programa ablocks" width="699" height="298" /></p>
 <p>3. Vemos el código que genera, que posteriormente lo integraremos en el programa de comunicaciones lora en el emisor. El código que genera es éste: </p>
-<p><code>#include &lt;Wire.h&gt;</code><br /><code>#include &lt;Adafruit_BMP280.h&gt;</code><br /><code>#include "ABlocks_DHT.h"</code><br /><code>#include "ABlocks_TinyGPS.h"</code><br /><code>#include &lt;HardwareSerial.h&gt;</code></p>
-<p><code>double presion;</code><br /><code>double altitud;</code><br /><code>double temperatura;</code><br /><code>double humedad;</code><br /><code>double longitud;</code><br /><code>double latitud;</code><br /><code>double velocidad;</code><br /><code>String s_registro;</code><br /><code>Adafruit_BMP280 bmp280;</code></p>
-<p><code>DHT dht2(2,DHT22);</code><br /><code>TinyGPS gps;</code><br /><code>float gps_lat=0;</code><br /><code>float gps_long=0;</code><br /><code>float gps_speed_kmph=0;</code><br /><code>float gps_speed_mph=0;</code><br /><code>float gps_altitude=0;</code><br /><code>float gps_course=0;</code><br /><code>bool gps_fixed=false;</code><br /><code>byte gps_day=0;</code><br /><code>byte gps_month=0;</code><br /><code>int gps_year=0;</code><br /><code>byte gps_hour=0;</code><br /><code>byte gps_min=0;</code><br /><code>byte gps_sec=0;</code><br /><code>byte gps_hund=0;</code><br /><code>HardwareSerial &amp;gps_serial=Serial;</code></p>
-<p><code>void leesensores() {</code><br /><code>presion = (bmp280.readPressure()/100.0);</code><br /><code>altitud = bmp280.readAltitude();</code><br /><code>temperatura = dht2.readTemperature();</code><br /><code>humedad = dht2.readHumidity();</code><br /><code>if (gps_fixed) {</code><br /><code>longitud = gps_long;</code><br /><code>latitud = gps_lat;</code><br /><code>velocidad = gps_speed_kmph;</code><br /><code>}</code></p>
-<p><code>}</code><br /><code>void fnc_gps_update()</code><br /><code>{</code><br /><code>unsigned long fix_age;</code><br /><code>while (gps_serial.available()){</code><br /><code>if(gps.encode(gps_serial.read())){</code><br /><code>gps_fixed=false;</code><br /><code>gps_lat=gps_long=gps_speed_kmph=gps_speed_mph=gps_course=0;</code><br /><code>gps_day=gps_month=gps_year=gps_hour=gps_min=gps_sec=0;</code><br /><code>gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);</code><br /><code>if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age&lt;5000){</code><br /><code>gps_fixed=true;</code><br /><code>gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day,&amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);</code><br /><code>gps_altitude=gps.f_altitude();</code><br /><code>gps_course=gps.f_course();</code><br /><code>gps_speed_kmph=gps.f_speed_kmph();</code><br /><code>gps_speed_mph=gps.f_speed_mph();</code><br /><code>}</code><br /><code>}</code><br /><code>}</code><br /><code>}</code></p>
-<p><code>void setup()</code><br /><code>{</code><br /><code>pinMode(2, INPUT);</code></p>
-<p><code>bmp280.begin(0x76);</code><br /><code>bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL,Adafruit_BMP280::SAMPLING_X2,Adafruit_BMP280::SAMPLING_X16,Adafruit_BMP280::FILTER_X16,Adafruit_BMP280::STANDBY_MS_500);</code><br /><code>dht2.begin();</code></p>
-<p><code>gps_serial.begin(9600);</code><br /><code>gps_serial.println("$PMTK220,1000*1F");</code></p>
-<p><code>}</code></p>
-<p><br /><code>void loop()</code><br /><code>{</code><br /><code>yield();</code></p>
-<p><code>fnc_gps_update();</code><br /><code>s_registro = String(presion)+String(";")+String(altitud)+String(";")+String(temperatura)+String(";")+String(humedad)+String(";")+String(longitud)+String(";")+String(latitud)+String(";")+String(velocidad)+String(";");</code></p>
-<p><code>}</code></p>
+<div class="highlighted-code language-c line-numbers">
+<div>
+<pre><code>#include &lt;Wire.h&gt;
+#include &lt;Adafruit_BMP280.h&gt;
+#include "ABlocks_DHT.h"
+#include "ABlocks_TinyGPS.h"
+#include &lt;HardwareSerial.h&gt;
+
+double presion;
+double altitud;
+double temperatura;
+double humedad;
+double longitud;
+double latitud;
+double velocidad;
+String s_registro;
+Adafruit_BMP280 bmp280;
+
+DHT dht2(2, DHT22);
+TinyGPS gps;
+float gps_lat = 0;
+float gps_long = 0;
+float gps_speed_kmph = 0;
+float gps_speed_mph = 0;
+float gps_altitude = 0;
+float gps_course = 0;
+bool gps_fixed = false;
+byte gps_day = 0;
+byte gps_month = 0;
+int gps_year = 0;
+byte gps_hour = 0;
+byte gps_min = 0;
+byte gps_sec = 0;
+byte gps_hund = 0;
+HardwareSerial &amp;gps_serial = Serial;
+
+void leesensores() {
+  presion = (bmp280.readPressure() / 100.0);
+  altitud = bmp280.readAltitude();
+  temperatura = dht2.readTemperature();
+  humedad = dht2.readHumidity();
+  if (gps_fixed) {
+    longitud = gps_long;
+    latitud = gps_lat;
+    velocidad = gps_speed_kmph;
+  }
+}
+void fnc_gps_update() {
+  unsigned long fix_age;
+  while (gps_serial.available()) {
+    if (gps.encode(gps_serial.read())) {
+      gps_fixed = false;
+      gps_lat = gps_long = gps_speed_kmph = gps_speed_mph = gps_course = 0;
+      gps_day = gps_month = gps_year = gps_hour = gps_min = gps_sec = 0;
+      gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);
+      if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age &lt; 5000) {
+        gps_fixed = true;
+        gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day, &amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);
+        gps_altitude = gps.f_altitude();
+        gps_course = gps.f_course();
+        gps_speed_kmph = gps.f_speed_kmph();
+        gps_speed_mph = gps.f_speed_mph();
+      }
+    }
+  }
+}
+
+void setup() {
+  pinMode(2, INPUT);
+
+  bmp280.begin(0x76);
+  bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL, Adafruit_BMP280::SAMPLING_X2, Adafruit_BMP280::SAMPLING_X16, Adafruit_BMP280::FILTER_X16, Adafruit_BMP280::STANDBY_MS_500);
+  dht2.begin();
+
+  gps_serial.begin(9600);
+  gps_serial.println("$PMTK220,1000*1F");
+}
+
+
+void loop() {
+  yield();
+
+  fnc_gps_update();
+  s_registro = String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+}</code></pre>
+</div>
+</div>
 <p></p></div>
 </div>
 </div>

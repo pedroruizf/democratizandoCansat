@@ -7,12 +7,6 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-//Libraries for ablocks
-#include "ABlocks_TinyGPS.h"
-#include <HardwareSerial.h>
-#include <Adafruit_BMP280.h>
-#include "ABlocks_DHT.h"
-
 //define the pins used by the LoRa transceiver module
 #define SCK 5
 #define MISO 19

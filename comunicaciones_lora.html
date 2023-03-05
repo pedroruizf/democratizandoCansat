@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="exe_highlighter.css" />
 <link rel="stylesheet" type="text/css" href="content.css" />
 <link rel="stylesheet" type="text/css" href="nav.css" />
 <meta http-equiv="content-type" content="text/html;  charset=utf-8" />
@@ -12,6 +13,7 @@
 <meta name="generator" content="eXeLearning 2.8 - exelearning.net" />
 <!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
 <script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="exe_highlighter.js"></script>
 <script type="text/javascript" src="common_i18n.js"></script>
 <script type="text/javascript" src="common.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,6 +41,7 @@
       <li class="current-page-parent"><a href="ide_de_arduino.html" class="current-page-parent daddy">IDE de Arduino</a>
       <ul>
          <li id="active"><a href="comunicaciones_lora.html" class="active no-ch">Comunicaciones LoRa</a></li>
+         <li><a href="microsd.html" class="no-ch">MicroSD</a></li>
       </ul>
       </li>
       <li><a href="arduin_oblocks.html" class="daddy">Arduin oblocks</a>
@@ -54,7 +57,7 @@
 </nav>
 <div id='topPagination'>
 <nav class="pagination noprt">
-<a href="ide_de_arduino.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="arduin_oblocks.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="ide_de_arduino.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="microsd.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <div id="main-wrapper">
@@ -68,37 +71,239 @@
 <div id="ta13_120_2" class="block iDevice_content">
 <div class="exe-text"><p>Se trata de enviar del emisor al receptor el tiempo que transcurre en el emisor a través de un contador, también se hace uso de la pantalla OLED. El receptor además envía el registro a puerto serie.</p>
 <p><strong>Programa emisor de tiempo:</strong></p>
-<p><code>//Libraries for LoRa</code><br /><code>#include &lt;SPI.h&gt;</code><br /><code>#include &lt;LoRa.h&gt;</code></p>
-<p><br /><code>//Libraries for OLED Display</code><br /><code>#include &lt;Wire.h&gt;</code><br /><code>#include &lt;Adafruit_GFX.h&gt;</code><br /><code>#include &lt;Adafruit_SSD1306.h&gt;</code></p>
-<p><code>//define the pins used by the LoRa transceiver module</code><br /><code>#define SCK 5</code><br /><code>#define MISO 19</code><br /><code>#define MOSI 27</code><br /><code>#define SS 18</code><br /><code>#define RST 23</code><br /><code>#define DIO0 26</code></p>
-<p><code>//433E6 for Asia</code><br /><code>//866E6 for Europe</code><br /><code>//915E6 for North America</code><br /><code>#define BAND 866E6</code></p>
-<p><code>//OLED pins</code><br /><code>#define OLED_SDA 21</code><br /><code>#define OLED_SCL 22</code><br /><code>#define OLED_RST 16</code><br /><code>#define SCREEN_WIDTH 128 // OLED display width, in pixels</code><br /><code>#define SCREEN_HEIGHT 64 // OLED display height, in pixels</code></p>
-<p><code>//contador de tiempo</code><br /><code>int counter=0;</code></p>
-<p><code>//creacion de pantalla (objeto display)</code><br /><code>Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);</code></p>
-<p><code>//funciones</code></p>
-<p><code>void envia_lora(){//Send LoRa packet to receiver</code><br /><code>LoRa.beginPacket();</code><br /><code>LoRa.print(counter);</code><br /><code>LoRa.endPacket();</code><br /><code>}</code></p>
-<p><code>void envia_oled(){</code><br /><code>display.clearDisplay();</code><br /><code>display.setCursor(0,0);</code><br /><code>display.println("Club Robotica Granada");</code><br /><code>display.setCursor(0,20);</code><br /><code>display.setTextSize(1);</code><br /><code>display.print("Paquete LoRa enviado.");</code><br /><code>display.setCursor(0,30);</code><br /><code>display.print("Contador: ");</code><br /><code>display.setCursor(60,30);</code><br /><code>display.print(counter); </code><br /><code>display.display();</code><br /><code>}</code></p>
-<p><br /><code>void setup() {</code><br /><code>//reset OLED display via software</code><br /><code>pinMode(OLED_RST, OUTPUT);</code><br /><code>digitalWrite(OLED_RST, LOW);</code><br /><code>delay(20);</code><br /><code>digitalWrite(OLED_RST, HIGH);</code></p>
-<p><code>//initialize OLED</code><br /><code>Wire.begin(OLED_SDA, OLED_SCL);</code><br /><code>if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32</code><br /><code>Serial.println(F("SSD1306 allocation failed"));</code><br /><code>for(;;); // Don't proceed, loop forever</code><br /><code>}</code><br /><code> </code><br /><code>display.clearDisplay();</code><br /><code>display.setTextColor(WHITE);</code><br /><code>display.setTextSize(1);</code><br /><code>display.setCursor(0,0);</code><br /><code>display.print("LORA SENDER ");</code><br /><code>display.display();</code><br /><code> </code><br /><code>/*initialize Serial Monitor</code><br /><code>Serial.begin(115200);</code><br /><code> </code><br /><code>Serial.println("Prueba de envio LoRa");*/</code></p>
-<p><code>//SPI LoRa pins</code><br /><code>SPI.begin(SCK, MISO, MOSI, SS);</code><br /><code>//setup LoRa transceiver module</code><br /><code>LoRa.setPins(SS, RST, DIO0);</code><br /><code> </code><br /><code>if (!LoRa.begin(BAND)) {</code><br /><code>display.setCursor(0,10);</code><br /><code>display.print("Starting LoRa failed!");</code><br /><code>display.display();</code><br /><code>//Serial.println("Starting LoRa failed!");</code><br /><code>while (1);</code><br /><code>}</code><br /><code>//Serial.println("LoRa Inicializacion OK!");</code><br /><code>display.setCursor(0,10);</code><br /><code>display.print("Inicializacion OK!");</code><br /><code>display.display();</code><br /><code>delay(2000);</code><br /><code>}</code></p>
-<p><code>void loop() {</code><br /><code>envia_lora();</code><br /><code>envia_oled();</code><br /><code>counter++;</code><br /><code>delay(1000);</code><br /><code>}</code></p>
-<p><strong>Programa receptor:</strong></p>
-<p><code>//Libraries for LoRa</code><br /><code>#include &lt;SPI.h&gt;</code><br /><code>#include &lt;LoRa.h&gt;</code></p>
-<p><code>//Libraries for OLED Display</code><br /><code>#include &lt;Wire.h&gt;</code><br /><code>#include &lt;Adafruit_GFX.h&gt;</code><br /><code>#include &lt;Adafruit_SSD1306.h&gt;</code></p>
-<p><code>//define the pins used by the LoRa transceiver module</code><br /><code>#define SCK 5</code><br /><code>#define MISO 19</code><br /><code>#define MOSI 27</code><br /><code>#define SS 18</code><br /><code>#define RST 23</code><br /><code>#define DIO0 26</code></p>
-<p><code>//433E6 for Asia</code><br /><code>//866E6 for Europe</code><br /><code>//915E6 for North America</code><br /><code>#define BAND 866E6</code></p>
-<p><code>//OLED pins</code><br /><code>#define OLED_SDA 21</code><br /><code>#define OLED_SCL 22</code><br /><code>#define OLED_RST 16</code><br /><code>#define SCREEN_WIDTH 128 // OLED display width, in pixels</code><br /><code>#define SCREEN_HEIGHT 64 // OLED display height, in pixels</code></p>
-<p><code>Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);</code></p>
-<p><code>String LoRaData;</code></p>
-<p><code>void setup() {</code><br /><code> </code><br /><code>//reset OLED display via software</code><br /><code>pinMode(OLED_RST, OUTPUT);</code><br /><code>digitalWrite(OLED_RST, LOW);</code><br /><code>delay(20);</code><br /><code>digitalWrite(OLED_RST, HIGH);</code><br /><code> </code><br /><code>//initialize OLED</code><br /><code>Wire.begin(OLED_SDA, OLED_SCL);</code><br /><code>if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32</code><br /><code>Serial.println(F("SSD1306 allocation failed"));</code><br /><code>for(;;); // Don't proceed, loop forever</code><br /><code>}</code></p>
-<p><code>display.clearDisplay();</code><br /><code>display.setTextColor(WHITE);</code><br /><code>display.setTextSize(1);</code><br /><code>display.setCursor(0,0);</code><br /><code>display.print("LORA RECEIVER ");</code><br /><code>display.display();</code><br /><code> </code><br /><code>//initialize Serial Monitor</code><br /><code>Serial.begin(115200);</code></p>
-<p><code>Serial.println("LoRa Receiver Test");</code><br /><code> </code><br /><code>//SPI LoRa pins</code><br /><code>SPI.begin(SCK, MISO, MOSI, SS);</code><br /><code>//setup LoRa transceiver module</code><br /><code>LoRa.setPins(SS, RST, DIO0);</code></p>
-<p><code>if (!LoRa.begin(BAND)) {</code><br /><code>Serial.println("Starting LoRa failed!");</code><br /><code>while (1);</code><br /><code>}</code><br /><code>Serial.println("LoRa Initializing OK!");</code><br /><code>display.setCursor(0,10);</code><br /><code>display.println("LoRa Inicializacion OK!");</code><br /><code>display.display(); </code><br /><code>}</code></p>
-<p><code>void loop() {</code></p>
-<p><code>//try to parse packet</code><br /><code>int packetSize = LoRa.parsePacket();</code><br /><code>if (packetSize) {</code><br /><code>//received a packet</code><br /><code>//Serial.print("Received packet ");</code></p>
-<p><code>//read packet</code><br /><code>while (LoRa.available()) {</code><br /><code>LoRaData = LoRa.readString();</code><br /><code>Serial.print(LoRaData);</code><br /><code>Serial.print("\r\n");</code><br /><code>}</code></p>
-<p><code>//print RSSI of packet</code><br /><code>int rssi = LoRa.packetRssi();</code><br /><code>//Serial.print(" with RSSI "); </code><br /><code>//Serial.println(rssi);</code></p>
-<p><code>// Display information</code><br /><code>display.clearDisplay();</code><br /><code>display.setCursor(0,0);</code><br /><code>display.print("CANSAT CRG");</code><br /><code>display.setCursor(0,10);</code><br /><code>display.print("Mensaje recibido:");</code><br /><code>display.setCursor(0,20);</code><br /><code>display.print(LoRaData);</code><br /><code>display.setCursor(0,50);</code><br /><code>display.print("RSSI:");</code><br /><code>display.setCursor(30,50);</code><br /><code>display.print(rssi);</code><br /><code>display.display(); </code><br /><code>}</code><br /><code>}</code></p></div>
+<p></p>
+<div class="highlighted-code language-c line-numbers">
+<div>
+<pre><code>//Libraries for LoRa
+#include &lt;SPI.h&gt;
+#include &lt;LoRa.h&gt;
+
+//Libraries for OLED Display
+#include &lt;Wire.h&gt;
+#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+//define the pins used by the LoRa transceiver module
+#define SCK 5
+#define MISO 19
+#define MOSI 27
+#define SS 18
+#define RST 23
+#define DIO0 26
+
+//433E6 for Asia
+//866E6 for Europe
+//915E6 for North America
+#define BAND 866E6
+
+//OLED pins
+#define OLED_SDA 21
+#define OLED_SCL 22 
+#define OLED_RST 16
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+//contador de tiempo
+int counter=0;
+
+//creacion de pantalla (objeto display)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);
+
+//funciones
+
+void envia_lora(){//Send LoRa packet to receiver
+  LoRa.beginPacket();
+  LoRa.print(counter);
+  LoRa.endPacket();
+}
+
+void envia_oled(){
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("Club Robotica Granada");
+  display.setCursor(0,20);
+  display.setTextSize(1);
+  display.print("Paquete LoRa enviado.");
+  display.setCursor(0,30);
+  display.print("Contador: ");
+  display.setCursor(60,30);
+  display.print(counter);      
+  display.display();
+}
+
+
+void setup() {
+  //reset OLED display via software
+  pinMode(OLED_RST, OUTPUT);
+  digitalWrite(OLED_RST, LOW);
+  delay(20);
+  digitalWrite(OLED_RST, HIGH);
+
+  //initialize OLED
+  Wire.begin(OLED_SDA, OLED_SCL);
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+  
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.print("LORA SENDER ");
+  display.display();
+  
+  /*initialize Serial Monitor
+  Serial.begin(115200);
+  
+  Serial.println("Prueba de envio LoRa");*/
+
+  //SPI LoRa pins
+  SPI.begin(SCK, MISO, MOSI, SS);
+  //setup LoRa transceiver module
+  LoRa.setPins(SS, RST, DIO0);
+  
+  if (!LoRa.begin(BAND)) {
+    display.setCursor(0,10);
+    display.print("Starting LoRa failed!");
+    display.display();
+    //Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+  //Serial.println("LoRa Inicializacion OK!");
+  display.setCursor(0,10);
+  display.print("Inicializacion OK!");
+  display.display();
+  delay(2000);
+}
+
+void loop() {
+  envia_lora();
+  envia_oled();
+  counter++;
+  delay(1000);
+}
+</code></pre>
+</div>
+</div>
+<p><strong>Programa receptor: </strong></p>
+<p>Este programa será el que proponemos definitivo para recepción de datos en PC.</p>
+<div class="highlighted-code language-c line-numbers">
+<div>
+<pre><code>//Libraries for LoRa
+#include &lt;SPI.h&gt;
+#include &lt;LoRa.h&gt;
+
+//Libraries for OLED Display
+#include &lt;Wire.h&gt;
+#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+//define the pins used by the LoRa transceiver module
+#define SCK 5
+#define MISO 19
+#define MOSI 27
+#define SS 18
+#define RST 23
+#define DIO0 26
+
+//433E6 for Asia
+//866E6 for Europe
+//915E6 for North America
+#define BAND 866E6
+
+//OLED pins
+#define OLED_SDA 21
+#define OLED_SCL 22
+#define OLED_RST 16
+#define SCREEN_WIDTH 128  // OLED display width, in pixels
+#define SCREEN_HEIGHT 64  // OLED display height, in pixels
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);
+
+String LoRaData;
+
+void setup() {
+
+  //reset OLED display via software
+  pinMode(OLED_RST, OUTPUT);
+  digitalWrite(OLED_RST, LOW);
+  delay(20);
+  digitalWrite(OLED_RST, HIGH);
+
+  //initialize OLED
+  Wire.begin(OLED_SDA, OLED_SCL);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) {  // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;  // Don't proceed, loop forever
+  }
+
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.print("LORA RECEIVER ");
+  display.display();
+
+  //initialize Serial Monitor
+  Serial.begin(115200);
+
+  Serial.println("LoRa Receiver Test");
+
+  //SPI LoRa pins
+  SPI.begin(SCK, MISO, MOSI, SS);
+  //setup LoRa transceiver module
+  LoRa.setPins(SS, RST, DIO0);
+
+  if (!LoRa.begin(BAND)) {
+    Serial.println("Starting LoRa failed!");
+    while (1)
+      ;
+  }
+  Serial.println("LoRa Initializing OK!");
+  display.setCursor(0, 10);
+  display.println("LoRa Inicializacion OK!");
+  display.display();
+}
+
+void loop() {
+
+  //try to parse packet
+  int packetSize = LoRa.parsePacket();
+  if (packetSize) {
+    //received a packet
+    //Serial.print("Received packet ");
+
+    //read packet
+    while (LoRa.available()) {
+      LoRaData = LoRa.readString();
+      Serial.print(LoRaData);
+      Serial.print("\r\n");
+    }
+
+    //print RSSI of packet
+    int rssi = LoRa.packetRssi();
+    //Serial.print(" with RSSI ");
+    //Serial.println(rssi);
+
+    // Display information
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.print("CANSAT CRG");
+    display.setCursor(0, 10);
+    display.print("Mensaje recibido:");
+    display.setCursor(0, 20);
+    display.print(LoRaData);
+    display.setCursor(0, 50);
+    display.print("RSSI:");
+    display.setCursor(30, 50);
+    display.print(rssi);
+    display.display();
+  }
+}</code></pre>
+</div>
+</div></div>
 </div>
 </div>
 </div>
@@ -112,8 +317,8 @@
 <div id="ta16_82" class="block iDevice_content">
 
 </div>
-<ul class='exeFileList'><li><a href='envio_ttgo_tiempo.ino' target='_blank'>envio_ttgo_tiempo.ino<span> (Ventana nueva)</span></a></li>
-<li><a href='recepcion_ttgo.ino' target='_blank'>recepcion_ttgo.ino<span> (Ventana nueva)</span></a></li>
+<ul class='exeFileList'><li><a href='recepcion_ttgo.ino' target='_blank'>recepcion_ttgo.ino<span> (Ventana nueva)</span></a></li>
+<li><a href='envio_ttgo_tiempo.ino' target='_blank'>envio_ttgo_tiempo.ino<span> (Ventana nueva)</span></a></li>
 </ul></div>
 </div>
 </div>
@@ -124,56 +329,7 @@
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta2_120_2" class="block iDevice_content">
-<div class="exe-text"><p>Para cambiar de canal, puede seguir estos pasos:</p>
-<ol>
-<li>Abra el archivo de ejemplo "LoRaSender" en el IDE de Arduino.</li>
-<li>Busque la línea que dice LoRa.beginPacket(); y agregue la siguiente línea debajo: LoRa.setChannel(1); // cambiar al canal 1. Esto cambiará la comunicación a través del canal 1. Puede cambiar el número del canal según sea necesario.</li>
-<li>Suba el programa a la placa TTGO ESP32 y verifique que se esté comunicando a través del nuevo canal.</li>
-</ol>
-<p>Tenga en cuenta que el dispositivo receptor también debe estar configurado para escuchar en el mismo canal para que la comunicación sea exitosa.</p>
-<p>En Europa, la banda de frecuencia para LoRa es la banda ISM (Industrial, Scientific, and Medical) de 868 MHz. Los canales de LoRa en Europa están espaciados en incrementos de 61,035 Hz, y hay un total de 8 canales disponibles en la banda de frecuencia de 868 MHz.</p>
-<p>A continuación, se muestra una tabla que muestra la frecuencia central y el número de canal correspondiente para cada uno de los 8 canales de LoRa en la banda de frecuencia de 868 MHz en Europa:</p>
-<table border="1" style="width: 14.3752%; height: 162px;">
-<tbody>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">Número de Canal</td>
-<td style="width: 6.54403%; height: 18px;">Frecuencia Central (Mhz)</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">0</td>
-<td style="width: 6.54403%; height: 18px;">868,1</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">1</td>
-<td style="width: 6.54403%; height: 18px;">868,3</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">2</td>
-<td style="width: 6.54403%; height: 18px;">868,5</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">3</td>
-<td style="width: 6.54403%; height: 18px;">867,1</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">4</td>
-<td style="width: 6.54403%; height: 18px;">867,3</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">5</td>
-<td style="width: 6.54403%; height: 18px;">867,5</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">6</td>
-<td style="width: 6.54403%; height: 18px;">867,7</td>
-</tr>
-<tr style="height: 18px;">
-<td style="width: 7.83133%; height: 18px;">7</td>
-<td style="width: 6.54403%; height: 18px;">867,9</td>
-</tr>
-</tbody>
-</table>
-<p>  Es importante tener en cuenta que, aunque estas frecuencias son las recomendadas en Europa, las regulaciones de frecuencia pueden variar según el país y es importante cumplir con las regulaciones locales y obtener las licencias necesarias antes de utilizar cualquier dispositivo de comunicación de radiofrecuencia.</p></div>
+<div class="exe-text"><p><span style="color: #ff0000;">¡ EN DESARROLLO !</span></p></div>
 </div>
 </div>
 </div>
@@ -193,39 +349,23 @@
 </article>
 <article class="iDevice_wrapper textIdevice em_iDevice" id="id9">
 <div class="iDevice emphasis1" >
-<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Encriptación de datos</h1></header>
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">CRC y Sync Word</h1></header>
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta9_125_2" class="block iDevice_content">
-<div class="exe-text"><p>La señal LoRa en sí misma no está encriptada de forma nativa, pero se puede implementar una capa adicional de encriptación para proteger la información transmitida.</p>
-<p>Es decir, los módulos TTGO LoRa ESP32 por sí solos no incluyen encriptación, pero es posible agregar una capa de seguridad utilizando protocolos de encriptación estándar como AES, que proporcionan una forma de proteger la privacidad de los datos transmitidos.</p>
-<p>Además, hay varias bibliotecas de software disponibles para implementar la encriptación en los módulos TTGO LoRa ESP32, como por ejemplo la biblioteca "Crypto" para el lenguaje de programación Arduino. Por lo tanto, es posible utilizar la encriptación para proteger los datos transmitidos utilizando estos módulos.</p>
-<p>Aquí muestro un ejemplo sencillo de cómo se puede utilizar la biblioteca "Crypto" para encriptar datos en un módulo TTGO LoRa ESP32:</p>
-<p><code>#include &lt;Crypto.h&gt;</code><br /><code>#include &lt;LoRa.h&gt;</code></p>
-<p><code>// Define la clave de encriptación (debe tener 16 bytes de longitud)</code><br /><code>byte key[] = {0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C};</code></p>
-<p><code>void setup() {</code><br /><code>// Inicializa la biblioteca LoRa</code><br /><code>LoRa.begin(868E6);</code><br /><code>}</code></p>
-<p><code>void loop() {</code><br /><code>// Define el mensaje que se va a enviar</code><br /><code>String mensaje = "Hola Mundo!";</code></p>
-<p><code>// Cifra el mensaje utilizando la clave de encriptación</code><br /><code>byte cifrado[16];</code><br /><code>AES aes;</code><br /><code>aes.setKey(key, sizeof(key));</code><br /><code>aes.encrypt((byte*)mensaje.c_str(), cifrado);</code></p>
-<p><code>// Envía el mensaje cifrado por LoRa</code><br /><code>LoRa.beginPacket();</code><br /><code>LoRa.write(cifrado, sizeof(cifrado));</code><br /><code>LoRa.endPacket();</code></p>
-<p><code>delay(5000);</code><br /><code>}</code></p>
-<p>Este ejemplo utiliza la biblioteca "Crypto" para cifrar un mensaje utilizando el algoritmo de encriptación AES. La clave de encriptación se define como un array de bytes de longitud 16. El mensaje se cifra utilizando la clave de encriptación, y luego se envía el mensaje cifrado utilizando la biblioteca LoRa.</p>
-<p>Es importante tener en cuenta que tanto el transmisor como el receptor deben conocer la clave de encriptación para poder descifrar el mensaje correctamente. Por lo tanto, es necesario compartir la clave de forma segura entre ambos dispositivos para garantizar la seguridad de la comunicación.</p>
-<p><strong>"aes.encrypt((byte*)mensaje.c_str(), cifrado);"</strong></p>
-<p>Esta línea de código cifra el mensaje utilizando la clave de encriptación definida anteriormente, y almacena el resultado cifrado en un array de bytes llamado cifrado.</p>
-<p>Aquí se explica con más detalle cada parte de la línea:</p>
-<p>aes.encrypt: es un método de la clase AES proporcionada por la biblioteca "Crypto", que se utiliza para cifrar datos utilizando el algoritmo AES.<br />((byte*)mensaje.c_str()): esto convierte el mensaje a un puntero de bytes utilizando el operador de conversión de tipos (byte*). La función c_str() de la clase String devuelve un puntero a la cadena de caracteres del mensaje, y el operador de conversión de tipos se utiliza para convertir ese puntero a un puntero de bytes que se pueda utilizar con la función aes.encrypt().<br />cifrado: este es el array de bytes en el que se almacenará el resultado cifrado del mensaje.<br />Entonces, en resumen, esta línea de código toma el mensaje como una cadena de caracteres (String), lo convierte a un array de bytes, lo cifra utilizando el algoritmo AES y la clave de encriptación definida, y almacena el resultado cifrado en un arreglo de bytes llamado cifrado.</p>
-<p><strong>Ejemplo de como desencriptar lo anterior:</strong><br />Aquí se muestra un ejemplo de cómo se puede utilizar la biblioteca "Crypto" para descifrar un mensaje cifrado con el mismo algoritmo AES y la misma clave de encriptación que se utilizó en el ejemplo anterior:</p>
-<p><code>#include &lt;Crypto.h&gt;</code><br /><code>#include &lt;LoRa.h&gt;</code></p>
-<p><code>// Define la clave de encriptación (debe tener 16 bytes de longitud)</code><br /><code>byte key[] = {0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C};</code></p>
-<p><code>void setup() {</code><br /><code>// Inicializa la biblioteca LoRa</code><br /><code>LoRa.begin(868E6);</code><br /><code>}</code></p>
-<p><code>void loop() {</code><br /><code>// Espera a recibir un mensaje por LoRa</code><br /><code>if (LoRa.parsePacket()) {</code></p>
-<p><code>// Lee el mensaje cifrado</code><br /><code>byte cifrado[16];</code><br /><code>int i = 0;</code><br /><code>while (LoRa.available()) {</code><br /><code>cifrado[i] = LoRa.read();</code><br /><code>i++;</code><br /><code>}</code></p>
-<p><code>// Descifra el mensaje utilizando la clave de encriptación</code><br /><code>byte descifrado[16];</code><br /><code>AES aes;</code><br /><code>aes.setKey(key, sizeof(key));</code><br /><code>aes.decrypt(cifrado, descifrado);</code></p>
-<p><code>// Imprime el mensaje descifrado</code><br /><code>String mensaje = String((char*)descifrado);</code><br /><code>Serial.println(mensaje);</code><br /><code>}</code><br /><code>}</code></p>
-<p>En este ejemplo, se espera a recibir un mensaje cifrado por LoRa utilizando el método parsePacket() de la biblioteca LoRa. Cuando se recibe un mensaje, se lee el mensaje cifrado byte por byte y se almacena en un arreglo de bytes llamado cifrado.</p>
-<p>Luego, se utiliza la misma clave de encriptación definida en el ejemplo anterior para descifrar el mensaje utilizando la función aes.decrypt(). El mensaje descifrado se almacena en un arreglo de bytes llamado descifrado, que se convierte a una cadena de caracteres (String) utilizando el operador de conversión de tipos (char*).</p>
-<p>Finalmente, el mensaje descifrado se imprime en el monitor serie utilizando la función Serial.println().</p>
-<p>Es importante tener en cuenta que el transmisor y el receptor deben utilizar la misma clave de encriptación para poder descifrar el mensaje correctamente. Si se utiliza una clave diferente en el transmisor y en el receptor, el mensaje descifrado no será legible.</p></div>
+<div class="exe-text"><p><span style="color: #ff0000;">¡ EN DESARROLLO !</span></p>
+<p>La verificación por redundancia cíclica​ (CRC) es un código de detección de errores usado frecuentemente en redes digitales y en dispositivos de almacenamiento para detectar cambios accidentales en los datos. Comprueba aritméticamente que los datos recibidos concuerdan con los enviados.</p>
+<p>Librería LoRa:</p>
+<p>Enable or disable CRC usage, by default a CRC is not used.</p>
+<ul>
+<li>LoRa.enableCrc();</li>
+<li>LoRa.disableCrc();</li>
+</ul>
+<p>Change the sync word of the radio.</p>
+<ul>
+<li>LoRa.setSyncWord(syncWord);</li>
+</ul>
+<p>syncWord - byte value to use as the sync word, defaults to 0x12</p></div>
 </div>
 </div>
 </div>
@@ -238,7 +378,7 @@
 </div>
 <div id='bottomPagination'>
 <nav class="pagination noprt">
-<a href="ide_de_arduino.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="arduin_oblocks.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="ide_de_arduino.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="microsd.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <footer id="siteFooter">Pedro Ruiz Fernández</footer></div>

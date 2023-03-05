@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="exe_highlighter.css" />
 <link rel="stylesheet" type="text/css" href="content.css" />
 <link rel="stylesheet" type="text/css" href="nav.css" />
 <meta http-equiv="content-type" content="text/html;  charset=utf-8" />
@@ -12,6 +13,7 @@
 <meta name="generator" content="eXeLearning 2.8 - exelearning.net" />
 <!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
 <script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="exe_highlighter.js"></script>
 <script type="text/javascript" src="common_i18n.js"></script>
 <script type="text/javascript" src="common.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,6 +41,7 @@
       <li><a href="ide_de_arduino.html" class="daddy">IDE de Arduino</a>
       <ul class="other-section">
          <li><a href="comunicaciones_lora.html" class="no-ch">Comunicaciones LoRa</a></li>
+         <li><a href="microsd.html" class="no-ch">MicroSD</a></li>
       </ul>
       </li>
       <li><a href="arduin_oblocks.html" class="daddy">Arduin oblocks</a>
@@ -64,29 +67,203 @@
 <div class="iDevice emphasis0" >
 <div id="ta19_125_2" class="block iDevice_content">
 <div class="exe-text"><p>Procedemos a integrar en el programa base del emisor la captación de datos con los sensores de arduin oblocks. Antes de verficar el programa o subirlo a la placa, debemos agregar las librerías que usa arduinoblocks en el mismo. Para ello primero debemos descargarnos las librerías que usa arduinoblocks de <a href="http://www.arduinoblocks.com/web/help/libraries" target="_blank" rel="noopener">aquí</a>, y posteriormente descomprimirlas en una carpeta. Más tarde copiamos las carpetas con las librerías que usa arduinoblocks en la carpeta de librerias del IDE de Arduino en tu equipo (/usuario/Arduino/libraries). Las carpetas a copiar son: Ablocks_BMP280, Ablocks_DHT, Ablocks_TinyGps.</p>
-<p><code>//Libraries for LoRa</code><br /><code>#include &lt;SPI.h&gt;</code><br /><code>#include &lt;LoRa.h&gt;</code></p>
-<p><code>//Libraries for OLED Display</code><br /><code>#include &lt;Wire.h&gt;</code><br /><code>#include &lt;Adafruit_GFX.h&gt;</code><br /><code>#include &lt;Adafruit_SSD1306.h&gt;</code></p>
-<p><code>//Libraries for ablocks</code><br /><code>#include "ABlocks_TinyGPS.h"</code><br /><code>#include &lt;HardwareSerial.h&gt;</code><br /><code>#include &lt;Adafruit_BMP280.h&gt;</code><br /><code>#include "ABlocks_DHT.h"</code></p>
-<p><code>//define the pins used by the LoRa transceiver module</code><br /><code>#define SCK 5</code><br /><code>#define MISO 19</code><br /><code>#define MOSI 27</code><br /><code>#define SS 18</code><br /><code>#define RST 23</code><br /><code>#define DIO0 26</code></p>
-<p><code>//433E6 for Asia</code><br /><code>//866E6 for Europe</code><br /><code>//915E6 for North America</code><br /><code>#define BAND 866E6</code></p>
-<p><code>//OLED pins</code><br /><code>#define OLED_SDA 21</code><br /><code>#define OLED_SCL 22</code><br /><code>#define OLED_RST 16</code><br /><code>#define SCREEN_WIDTH 128 // OLED display width, in pixels</code><br /><code>#define SCREEN_HEIGHT 64 // OLED display height, in pixels</code></p>
-<p><code>//creacion de pantalla (objeto display)</code><br /><code>Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);</code></p>
-<p><code>//contador de tiempo</code><br /><code>int counter=0;</code></p>
-<p><code>//variables creadas por ablocks</code><br /><code>double presion;</code><br /><code>double altitud;</code><br /><code>double temperatura;</code><br /><code>double humedad;</code><br /><code>double longitud;</code><br /><code>double latitud;</code><br /><code>double velocidad;</code><br /><code>String s_registro;</code><br /><code>TinyGPS gps;</code><br /><code>float gps_lat=0;</code><br /><code>float gps_long=0;</code><br /><code>float gps_speed_kmph=0;</code><br /><code>float gps_speed_mph=0;</code><br /><code>float gps_altitude=0;</code><br /><code>float gps_course=0;</code><br /><code>bool gps_fixed=false;</code><br /><code>byte gps_day=0;</code><br /><code>byte gps_month=0;</code><br /><code>int gps_year=0;</code><br /><code>byte gps_hour=0;</code><br /><code>byte gps_min=0;</code><br /><code>byte gps_sec=0;</code><br /><code>byte gps_hund=0;</code><br /><code>HardwareSerial &amp;gps_serial=Serial;</code><br /><code>Adafruit_BMP280 bmp280;</code></p>
-<p><code>DHT dht2(2,DHT22);</code></p>
-<p><code>//funciones</code></p>
-<p><code>void envia_lora(){//Send LoRa packet to receiver</code><br /><code>s_registro = String (counter)+String(";")+String(presion)+String(";")+String(altitud)+String(";")+String(temperatura)+String(";")+String(humedad)+String(";")+String(longitud)+String(";")+String(latitud)+String(";")+String(velocidad)+String(";");</code><br /><code>LoRa.beginPacket();</code><br /><code>LoRa.print (s_registro);</code><br /><code>//LoRa.print(counter);</code><br /><code>LoRa.endPacket();</code><br /><code>}</code></p>
-<p><code>void envia_oled(){</code><br /><code>display.clearDisplay();</code><br /><code>display.setCursor(0,0);</code><br /><code>display.println("Club Robotica Granada");</code><br /><code>display.setCursor(0,20);</code><br /><code>display.setTextSize(1);</code><br /><code>display.print("Paquete LoRa enviado.");</code><br /><code>display.setCursor(0,30);</code><br /><code>display.print("Contador: ");</code><br /><code>display.setCursor(60,30);</code><br /><code>display.print(counter); </code><br /><code>display.display();</code><br /><code>}</code></p>
-<p><code>//funciones creadas en ablocks</code><br /><code>void fnc_gps_update()</code><br /><code>{</code><br /><code>unsigned long fix_age;</code><br /><code>while (gps_serial.available()){</code><br /><code>if(gps.encode(gps_serial.read())){</code><br /><code>gps_fixed=false;</code><br /><code>gps_lat=gps_long=gps_speed_kmph=gps_speed_mph=gps_course=0;</code><br /><code>gps_day=gps_month=gps_year=gps_hour=gps_min=gps_sec=0;</code><br /><code>gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);</code><br /><code>if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age&lt;5000){</code><br /><code>gps_fixed=true;</code><br /><code>gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day,&amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);</code><br /><code>gps_altitude=gps.f_altitude();</code><br /><code>gps_course=gps.f_course();</code><br /><code>gps_speed_kmph=gps.f_speed_kmph();</code><br /><code>gps_speed_mph=gps.f_speed_mph();</code><br /><code>}</code><br /><code>}</code><br /><code>}</code><br /><code>}</code></p>
-<p><code>void leesensores() {</code><br /><code>presion = (bmp280.readPressure()/100.0);</code><br /><code>altitud = bmp280.readAltitude();</code><br /><code>temperatura = dht2.readTemperature();</code><br /><code>humedad = dht2.readHumidity();</code><br /><code>if (gps_fixed) {</code><br /><code>longitud = gps_long;</code><br /><code>latitud = gps_lat;</code><br /><code>velocidad = gps_speed_kmph;</code><br /><code>}</code></p>
-<p><code>}</code></p>
-<p><code>void setup() {</code><br /><code>//reset OLED display via software</code><br /><code>pinMode(OLED_RST, OUTPUT);</code><br /><code>digitalWrite(OLED_RST, LOW);</code><br /><code>delay(20);</code><br /><code>digitalWrite(OLED_RST, HIGH);</code></p>
-<p><code>//initialize OLED</code><br /><code>Wire.begin(OLED_SDA, OLED_SCL);</code><br /><code>if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32</code><br /><code>Serial.println(F("SSD1306 allocation failed"));</code><br /><code>for(;;); // Don't proceed, loop forever</code><br /><code>}</code><br /><code> </code><br /><code>display.clearDisplay();</code><br /><code>display.setTextColor(WHITE);</code><br /><code>display.setTextSize(1);</code><br /><code>display.setCursor(0,0);</code><br /><code>display.print("LORA SENDER ");</code><br /><code>display.display();</code><br /><code> </code><br /><code>/*initialize Serial Monitor</code><br /><code>Serial.begin(115200);</code><br /><code> </code><br /><code>Serial.println("Prueba de envio LoRa");*/</code></p>
-<p><code>//SPI LoRa pins</code><br /><code>SPI.begin(SCK, MISO, MOSI, SS);</code><br /><code>//setup LoRa transceiver module</code><br /><code>LoRa.setPins(SS, RST, DIO0);</code><br /><code> </code><br /><code>if (!LoRa.begin(BAND)) {</code><br /><code>display.setCursor(0,10);</code><br /><code>display.print("Starting LoRa failed!");</code><br /><code>display.display();</code><br /><code>//Serial.println("Starting LoRa failed!");</code><br /><code>while (1);</code><br /><code>}</code><br /><code>//Serial.println("LoRa Inicializacion OK!");</code><br /><code>display.setCursor(0,10);</code><br /><code>display.print("Inicializacion OK!");</code><br /><code>display.display();</code><br /><code>delay(2000);</code><br /><code> </code><br /><code>//setup de ablocks</code><br /><code>pinMode(2, INPUT);</code></p>
-<p><code>bmp280.begin(0x76);</code><br /><code>bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL,Adafruit_BMP280::SAMPLING_X2,Adafruit_BMP280::SAMPLING_X16,Adafruit_BMP280::FILTER_X16,Adafruit_BMP280::STANDBY_MS_500);</code><br /><code>dht2.begin();</code></p>
-<p><code>gps_serial.begin(9600);</code><br /><code>gps_serial.println("$PMTK220,1000*1F");</code></p>
-<p><code>}</code></p>
-<p><code>void loop() {</code><br /><code>fnc_gps_update();</code><br /><code>leesensores();</code><br /><code>envia_lora();</code><br /><code>envia_oled();</code><br /><code>counter++;</code><br /><code>delay(1000);</code><br /><code>}</code></p></div>
+<div class="highlighted-code language-c line-numbers">
+<div>
+<pre><code>//Libraries for LoRa
+#include &lt;SPI.h&gt;
+#include &lt;LoRa.h&gt;
+
+//Libraries for OLED Display
+#include &lt;Wire.h&gt;
+#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+//Libraries for ablocks
+#include "ABlocks_TinyGPS.h"
+#include &lt;HardwareSerial.h&gt;
+#include &lt;Adafruit_BMP280.h&gt;
+#include "ABlocks_DHT.h"
+
+//define the pins used by the LoRa transceiver module
+#define SCK 5
+#define MISO 19
+#define MOSI 27
+#define SS 18
+#define RST 23
+#define DIO0 26
+
+//433E6 for Asia
+//866E6 for Europe
+//915E6 for North America
+#define BAND 866E6
+
+//OLED pins
+#define OLED_SDA 21
+#define OLED_SCL 22
+#define OLED_RST 16
+#define SCREEN_WIDTH 128  // OLED display width, in pixels
+#define SCREEN_HEIGHT 64  // OLED display height, in pixels
+
+//creacion de pantalla (objeto display)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);
+
+//contador de tiempo
+int counter = 0;
+
+//variables creadas por ablocks
+double presion;
+double altitud;
+double temperatura;
+double humedad;
+double longitud;
+double latitud;
+double velocidad;
+String s_registro;
+TinyGPS gps;
+float gps_lat = 0;
+float gps_long = 0;
+float gps_speed_kmph = 0;
+float gps_speed_mph = 0;
+float gps_altitude = 0;
+float gps_course = 0;
+bool gps_fixed = false;
+byte gps_day = 0;
+byte gps_month = 0;
+int gps_year = 0;
+byte gps_hour = 0;
+byte gps_min = 0;
+byte gps_sec = 0;
+byte gps_hund = 0;
+HardwareSerial &amp;gps_serial = Serial;
+Adafruit_BMP280 bmp280;
+
+DHT dht2(2, DHT22);
+
+//funciones
+
+void envia_lora() {  //Send LoRa packet to receiver
+  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+  LoRa.beginPacket();
+  LoRa.print(s_registro);
+  //LoRa.print(counter);
+  LoRa.endPacket();
+}
+
+void envia_oled() {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("Club Robotica Granada");
+  display.setCursor(0, 20);
+  display.setTextSize(1);
+  display.print("Paquete LoRa enviado.");
+  display.setCursor(0, 30);
+  display.print("Contador: ");
+  display.setCursor(60, 30);
+  display.print(counter);
+  display.display();
+}
+
+//funciones creadas en ablocks
+void fnc_gps_update() {
+  unsigned long fix_age;
+  while (gps_serial.available()) {
+    if (gps.encode(gps_serial.read())) {
+      gps_fixed = false;
+      gps_lat = gps_long = gps_speed_kmph = gps_speed_mph = gps_course = 0;
+      gps_day = gps_month = gps_year = gps_hour = gps_min = gps_sec = 0;
+      gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);
+      if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age &lt; 5000) {
+        gps_fixed = true;
+        gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day, &amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);
+        gps_altitude = gps.f_altitude();
+        gps_course = gps.f_course();
+        gps_speed_kmph = gps.f_speed_kmph();
+        gps_speed_mph = gps.f_speed_mph();
+      }
+    }
+  }
+}
+
+void leesensores() {
+  presion = (bmp280.readPressure() / 100.0);
+  altitud = bmp280.readAltitude();
+  temperatura = dht2.readTemperature();
+  humedad = dht2.readHumidity();
+  if (gps_fixed) {
+    longitud = gps_long;
+    latitud = gps_lat;
+    velocidad = gps_speed_kmph;
+  }
+}
+
+void setup() {
+  //reset OLED display via software
+  pinMode(OLED_RST, OUTPUT);
+  digitalWrite(OLED_RST, LOW);
+  delay(20);
+  digitalWrite(OLED_RST, HIGH);
+
+  //initialize OLED
+  Wire.begin(OLED_SDA, OLED_SCL);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) {  // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;  // Don't proceed, loop forever
+  }
+
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.print("LORA SENDER ");
+  display.display();
+
+  /*initialize Serial Monitor
+  Serial.begin(115200);
+  
+  Serial.println("Prueba de envio LoRa");*/
+
+  //SPI LoRa pins
+  SPI.begin(SCK, MISO, MOSI, SS);
+  //setup LoRa transceiver module
+  LoRa.setPins(SS, RST, DIO0);
+
+  if (!LoRa.begin(BAND)) {
+    display.setCursor(0, 10);
+    display.print("Starting LoRa failed!");
+    display.display();
+    //Serial.println("Starting LoRa failed!");
+    while (1)
+      ;
+  }
+  //Serial.println("LoRa Inicializacion OK!");
+  display.setCursor(0, 10);
+  display.print("Inicializacion OK!");
+  display.display();
+  delay(2000);
+
+  //setup de ablocks
+  pinMode(2, INPUT);
+
+  bmp280.begin(0x76);
+  bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL, Adafruit_BMP280::SAMPLING_X2, Adafruit_BMP280::SAMPLING_X16, Adafruit_BMP280::FILTER_X16, Adafruit_BMP280::STANDBY_MS_500);
+  dht2.begin();
+
+  gps_serial.begin(9600);
+  gps_serial.println("$PMTK220,1000*1F");
+}
+
+void loop() {
+  fnc_gps_update();
+  leesensores();
+  envia_lora();
+  envia_oled();
+  counter++;
+  delay(1000);
+}
+</code></pre>
+</div>
+</div></div>
 </div>
 </div>
 </article>
