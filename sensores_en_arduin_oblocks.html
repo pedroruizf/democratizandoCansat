@@ -68,15 +68,15 @@
 <div id="ta18_124_2" class="block iDevice_content">
 <div class="exe-text"><p>1. Creamos un programa en arduin oblocks, tipo de proyecto ESP32 / WROOM.</p>
 <p>2. Implementamos el siguiente código:</p>
-<p><img src="programa_arduinoblocks_sensores.png" alt="programa ablocks" width="699" height="298" /></p>
-<p>3. Vemos el código que genera, que posteriormente lo integraremos en el programa de comunicaciones lora en el emisor. El código que genera es éste: </p>
+<p><img src="programa_arduinoblocks_sensores.png" alt="ablocks sensores" width="800" height="314" /></p>
+<p>3. Vemos el código que genera, que posteriormente lo integraremos en el programa de comunicaciones lora en el emisor. El código que genera es éste:</p>
 <div class="highlighted-code language-c line-numbers">
 <div>
-<pre><code>#include &lt;Wire.h&gt;
+<pre><code>#include "ABlocks_TinyGPS.h"
+#include &lt;HardwareSerial.h&gt;
+#include &lt;Wire.h&gt;
 #include &lt;Adafruit_BMP280.h&gt;
 #include "ABlocks_DHT.h"
-#include "ABlocks_TinyGPS.h"
-#include &lt;HardwareSerial.h&gt;
 
 double presion;
 double altitud;
@@ -86,74 +86,81 @@ double longitud;
 double latitud;
 double velocidad;
 String s_registro;
+TinyGPS gps;
+float gps_lat=0;
+float gps_long=0;
+float gps_speed_kmph=0;
+float gps_speed_mph=0;
+float gps_altitude=0;
+float gps_course=0;
+bool gps_fixed=false;
+byte gps_day=0;
+byte gps_month=0;
+int gps_year=0;
+byte gps_hour=0;
+byte gps_min=0;
+byte gps_sec=0;
+byte gps_hund=0;
+HardwareSerial &amp;gps_serial=Serial;
 Adafruit_BMP280 bmp280;
 
-DHT dht2(2, DHT22);
-TinyGPS gps;
-float gps_lat = 0;
-float gps_long = 0;
-float gps_speed_kmph = 0;
-float gps_speed_mph = 0;
-float gps_altitude = 0;
-float gps_course = 0;
-bool gps_fixed = false;
-byte gps_day = 0;
-byte gps_month = 0;
-int gps_year = 0;
-byte gps_hour = 0;
-byte gps_min = 0;
-byte gps_sec = 0;
-byte gps_hund = 0;
-HardwareSerial &amp;gps_serial = Serial;
+DHT dht34(34,DHT22);
+
+void fnc_gps_update()
+{
+	unsigned long fix_age;
+	while (gps_serial.available()){
+		if(gps.encode(gps_serial.read())){
+			gps_fixed=false;
+			gps_lat=gps_long=gps_speed_kmph=gps_speed_mph=gps_course=0;
+			gps_day=gps_month=gps_year=gps_hour=gps_min=gps_sec=0;
+			gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);
+			if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age&lt;5000){
+				gps_fixed=true;
+				gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day,&amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);
+				gps_altitude=gps.f_altitude();
+				gps_course=gps.f_course();
+				gps_speed_kmph=gps.f_speed_kmph();
+				gps_speed_mph=gps.f_speed_mph();
+			}
+		}
+	}
+}
 
 void leesensores() {
-  presion = (bmp280.readPressure() / 100.0);
-  altitud = bmp280.readAltitude();
-  temperatura = dht2.readTemperature();
-  humedad = dht2.readHumidity();
-  if (gps_fixed) {
-    longitud = gps_long;
-    latitud = gps_lat;
-    velocidad = gps_speed_kmph;
-  }
-}
-void fnc_gps_update() {
-  unsigned long fix_age;
-  while (gps_serial.available()) {
-    if (gps.encode(gps_serial.read())) {
-      gps_fixed = false;
-      gps_lat = gps_long = gps_speed_kmph = gps_speed_mph = gps_course = 0;
-      gps_day = gps_month = gps_year = gps_hour = gps_min = gps_sec = 0;
-      gps.f_get_position(&amp;gps_lat, &amp;gps_long, &amp;fix_age);
-      if (fix_age != TinyGPS::GPS_INVALID_AGE &amp;&amp; fix_age &lt; 5000) {
-        gps_fixed = true;
-        gps.crack_datetime(&amp;gps_year, &amp;gps_month, &amp;gps_day, &amp;gps_hour, &amp;gps_min, &amp;gps_sec, &amp;gps_hund, &amp;fix_age);
-        gps_altitude = gps.f_altitude();
-        gps_course = gps.f_course();
-        gps_speed_kmph = gps.f_speed_kmph();
-        gps_speed_mph = gps.f_speed_mph();
-      }
-    }
-  }
+	presion = (bmp280.readPressure()/100.0);
+	altitud = bmp280.readAltitude();
+	temperatura = dht34.readTemperature();
+	humedad = dht34.readHumidity();
+	if (gps_fixed) {
+		longitud = gps_long;
+		latitud = gps_lat;
+		velocidad = gps_speed_kmph;
+	}
+
 }
 
-void setup() {
-  pinMode(2, INPUT);
+void setup()
+{
+  	pinMode(34, INPUT);
 
-  bmp280.begin(0x76);
-  bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL, Adafruit_BMP280::SAMPLING_X2, Adafruit_BMP280::SAMPLING_X16, Adafruit_BMP280::FILTER_X16, Adafruit_BMP280::STANDBY_MS_500);
-  dht2.begin();
+	bmp280.begin(0x76);
+	bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL,Adafruit_BMP280::SAMPLING_X2,Adafruit_BMP280::SAMPLING_X16,Adafruit_BMP280::FILTER_X16,Adafruit_BMP280::STANDBY_MS_500);
+	dht34.begin();
 
-  gps_serial.begin(9600);
-  gps_serial.println("$PMTK220,1000*1F");
+	gps_serial.begin(9600);
+	gps_serial.println("$PMTK220,1000*1F");
+
 }
 
 
-void loop() {
-  yield();
+void loop()
+{
+	yield();
 
-  fnc_gps_update();
-  s_registro = String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+	fnc_gps_update();
+  	s_registro = String(presion)+String(";")+String(altitud)+String(";")+String(temperatura)+String(";")+String(humedad)+String(";")+String(longitud)+String(";")+String(latitud)+String(";")+String(velocidad)+String(";");
+
 }</code></pre>
 </div>
 </div>

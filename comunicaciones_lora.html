@@ -323,18 +323,6 @@ void loop() {
 </div>
 </div>
 </article>
-<article class="iDevice_wrapper textIdevice em_iDevice" id="id2">
-<div class="iDevice emphasis1" >
-<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Canales en LoRa</h1></header>
-<div class="iDevice_inner">
-<div class="iDevice_content_wrapper">
-<div id="ta2_120_2" class="block iDevice_content">
-<div class="exe-text"><p><span style="color: #ff0000;">¡ EN DESARROLLO !</span></p></div>
-</div>
-</div>
-</div>
-</div>
-</article>
 <article class="iDevice_wrapper textIdevice em_iDevice" id="id8">
 <div class="iDevice emphasis1" >
 <header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Tipo de señal</h1></header>
@@ -347,13 +335,23 @@ void loop() {
 </div>
 </div>
 </article>
-<article class="iDevice_wrapper textIdevice em_iDevice" id="id9">
+<article class="iDevice_wrapper textIdevice em_iDevice" id="id2">
 <div class="iDevice emphasis1" >
-<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">CRC y Sync Word</h1></header>
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Parámetros de transmisión en LoRa</h1></header>
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
-<div id="ta9_125_2" class="block iDevice_content">
-<div class="exe-text"><p><span style="color: #ff0000;">¡ EN DESARROLLO !</span></p>
+<div id="ta2_120_2" class="block iDevice_content">
+<div class="exe-text"><p><span style="color: #ff0000;">¡EN DESARROLLO!</span></p>
+<h4>TX Power</h4>
+<h4>Frecuencia</h4>
+<h4>Spreading Factor (SF)</h4>
+<h4>Ancho de banda</h4>
+<h4>Coding Rate</h4>
+<h4>Preamble Length</h4>
+<h4>Sync word</h4>
+<p>Change the sync word of the radio.</p>
+<p>LoRa.setSyncWord(syncWord);<br />syncWord - byte value to use as the sync word, defaults to 0x12</p>
+<h4>CRC</h4>
 <p>La verificación por redundancia cíclica​ (CRC) es un código de detección de errores usado frecuentemente en redes digitales y en dispositivos de almacenamiento para detectar cambios accidentales en los datos. Comprueba aritméticamente que los datos recibidos concuerdan con los enviados.</p>
 <p>Librería LoRa:</p>
 <p>Enable or disable CRC usage, by default a CRC is not used.</p>
@@ -361,11 +359,7 @@ void loop() {
 <li>LoRa.enableCrc();</li>
 <li>LoRa.disableCrc();</li>
 </ul>
-<p>Change the sync word of the radio.</p>
-<ul>
-<li>LoRa.setSyncWord(syncWord);</li>
-</ul>
-<p>syncWord - byte value to use as the sync word, defaults to 0x12</p></div>
+<p></p></div>
 </div>
 </div>
 </div>

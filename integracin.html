@@ -66,7 +66,8 @@
 <article class="iDevice_wrapper textIdevice" id="id19">
 <div class="iDevice emphasis0" >
 <div id="ta19_125_2" class="block iDevice_content">
-<div class="exe-text"><p>Procedemos a integrar en el programa base del emisor la captación de datos con los sensores de arduin oblocks. Antes de verficar el programa o subirlo a la placa, debemos agregar las librerías que usa arduinoblocks en el mismo. Para ello primero debemos descargarnos las librerías que usa arduinoblocks de <a href="http://www.arduinoblocks.com/web/help/libraries" target="_blank" rel="noopener">aquí</a>, y posteriormente descomprimirlas en una carpeta. Más tarde copiamos las carpetas con las librerías que usa arduinoblocks en la carpeta de librerias del IDE de Arduino en tu equipo (/usuario/Arduino/libraries). Las carpetas a copiar son: Ablocks_BMP280, Ablocks_DHT, Ablocks_TinyGps.</p>
+<div class="exe-text"><p>Procedemos a integrar en el programa base del emisor, con la captación de datos con los sensores de arduin oblocks y el grabado en microSD. Antes de verficar el programa o subirlo a la placa, debemos agregar las librerías que usa arduinoblocks en el mismo. Para ello primero debemos descargarnos las librerías que usa arduinoblocks de <a href="http://www.arduinoblocks.com/web/help/libraries" target="_blank" rel="noopener">aquí</a>, y posteriormente descomprimirlas en una carpeta. Más tarde copiamos las carpetas con las librerías que usa arduinoblocks en la carpeta de librerias del IDE de Arduino en tu equipo (/usuario/Arduino/libraries). Las carpetas a copiar son: Ablocks_BMP280, Ablocks_DHT, Ablocks_TinyGps.</p>
+<p>Programa con todo integrado</p>
 <div class="highlighted-code language-c line-numbers">
 <div>
 <pre><code>//Libraries for LoRa
@@ -77,6 +78,9 @@
 #include &lt;Wire.h&gt;
 #include &lt;Adafruit_GFX.h&gt;
 #include &lt;Adafruit_SSD1306.h&gt;
+
+//libraries for mSD
+#include &lt;mySD.h&gt;
 
 //Libraries for ablocks
 #include "ABlocks_TinyGPS.h"
@@ -106,6 +110,10 @@
 
 //creacion de pantalla (objeto display)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RST);
+
+//objetos y variables para mSD
+ext::File myFile;
+const int chipSelect = 13;
 
 //contador de tiempo
 int counter = 0;
@@ -137,15 +145,13 @@ byte gps_hund = 0;
 HardwareSerial &amp;gps_serial = Serial;
 Adafruit_BMP280 bmp280;
 
-DHT dht2(2, DHT22);
+DHT dht2(34, DHT22);
 
 //funciones
 
 void envia_lora() {  //Send LoRa packet to receiver
-  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
   LoRa.beginPacket();
   LoRa.print(s_registro);
-  //LoRa.print(counter);
   LoRa.endPacket();
 }
 
@@ -193,6 +199,16 @@ void leesensores() {
     longitud = gps_long;
     latitud = gps_lat;
     velocidad = gps_speed_kmph;
+  }
+  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+}
+
+void envia_sd() {
+  myFile = SD.open("datos.csv", FILE_WRITE);
+  if (myFile) {
+    myFile.println(s_registro);
+    // close the file:
+    myFile.close();
   }
 }
 
@@ -242,6 +258,10 @@ void setup() {
   display.display();
   delay(2000);
 
+  //setup mSD
+  pinMode(SS, OUTPUT);
+  SD.begin(13, 15, 2, 14);  //definición de pines CS,MOSI,MISO,SCK
+
   //setup de ablocks
   pinMode(2, INPUT);
 
@@ -258,10 +278,10 @@ void loop() {
   leesensores();
   envia_lora();
   envia_oled();
+  envia_sd();
   counter++;
   delay(1000);
-}
-</code></pre>
+}</code></pre>
 </div>
 </div></div>
 </div>
@@ -269,13 +289,13 @@ void loop() {
 </article>
 <article class="iDevice_wrapper FileAttachIdeviceInc em_iDevice em_iDevice_assignment" id="id21">
 <div class="iDevice emphasis1" >
-<header class="iDevice_header"><h1 class="iDeviceTitle">Programa emisor sensores integrados</h1></header>
+<header class="iDevice_header"><h1 class="iDeviceTitle">Programa emisor con sensores y microSD integrados</h1></header>
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta21_82" class="block iDevice_content">
 
 </div>
-<ul class='exeFileList'><li><a href='envio_ttgo_todo.ino' target='_blank'>envio_ttgo_todo.ino<span> (Ventana nueva)</span></a></li>
+<ul class='exeFileList'><li><a href='envio_ttgo_todo_sd.ino' target='_blank'>envio_ttgo_todo_sd.ino<span> (Ventana nueva)</span></a></li>
 </ul></div>
 </div>
 </div>
