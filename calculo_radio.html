@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="content.css" />
+<link rel="stylesheet" type="text/css" href="nav.css" />
+<meta http-equiv="content-type" content="text/html;  charset=utf-8" />
+<title>Calculo Radio | Democratizando CANSAT </title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<meta name="author" content="Pedro Ruiz Fernández" />
+<link rel="license" type="text/html" href="http://creativecommons.org/licenses/by-sa/4.0/" />
+<meta name="generator" content="eXeLearning 2.8 - exelearning.net" />
+<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
+<script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="common_i18n.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body class="exe-web-site exe-auto-math" id="exe-node-19"><script type="text/javascript">document.body.className+=" js"</script>
+<div id="content">
+<p id="skipNav"><a href="#main" class="sr-av">Saltar la navegación</a></p>
+<header id="header" ><div id="headerContent">Democratizando CANSAT</div></header>
+<nav id="siteNav">
+<ul>
+   <li><a href="index.html" class="daddy main-node">Democratizando CANSAT</a></li>
+   <li class="current-page-parent"><a href="hardware.html" class="current-page-parent daddy">Hardware</a>
+   <ul>
+      <li><a href="ttgo_lora32_v21_16.html" class="daddy">TTGO LoRa32 V2.1_1.6</a>
+      <ul class="other-section">
+         <li><a href="descripcin_de_producto.html" class="no-ch">Descripción de producto</a></li>
+         <li><a href="caractersticas_y_pinout.html" class="no-ch">Características y PinOUT</a></li>
+      </ul>
+      </li>
+      <li><a href="conexionado.html" class="no-ch">Conexionado</a></li>
+      <li class="current-page-parent"><a href="paracaidas.html" class="current-page-parent daddy">Paracaidas</a>
+      <ul>
+         <li id="active"><a href="calculo_radio.html" class="active no-ch">Calculo Radio</a></li>
+      </ul>
+      </li>
+      <li><a href="estructura_3d.html" class="no-ch">Estructura 3D</a></li>
+   </ul>
+   </li>
+   <li><a href="software.html" class="daddy">Software</a>
+   <ul class="other-section">
+      <li><a href="ide_de_arduino.html" class="daddy">IDE de Arduino</a>
+      <ul class="other-section">
+         <li><a href="comunicaciones_lora.html" class="no-ch">Comunicaciones LoRa</a></li>
+         <li><a href="microsd.html" class="no-ch">MicroSD</a></li>
+      </ul>
+      </li>
+      <li><a href="arduin_oblocks.html" class="daddy">Arduin oblocks</a>
+      <ul class="other-section">
+         <li><a href="sensores_en_arduin_oblocks.html" class="no-ch">Sensores en arduin oblocks</a></li>
+      </ul>
+      </li>
+      <li><a href="integracin.html" class="no-ch">Integración</a></li>
+   </ul>
+   </li>
+   <li><a href="fuentes.html" class="no-ch">Fuentes</a></li>
+</ul>
+</nav>
+<div id='topPagination'>
+<nav class="pagination noprt">
+<a href="paracaidas.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="estructura_3d.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+</nav>
+</div>
+<div id="main-wrapper">
+<section id="main">
+<header id="nodeDecoration"><h1 id="nodeTitle">Calculo Radio</h1></header>
+<article class="iDevice_wrapper textIdevice" id="id35">
+<div class="iDevice emphasis0" >
+<div id="ta35_120_2" class="block iDevice_content">
+<div class="exe-text"><p>El objetivo de esta sección es aprender a calcular el radio de la hemiesfera que forma nuestro paracaídas.</p>
+<p>Datos de Cálculo: Masa cansat entre 300 y 350 g, Tiempo de vuelo recomendado máximo 120 s, Velocidad de descenso entre 6 y 12 m/s (recomendadas entre 8 y 11 m/s).</p>
+<p>Para calcular vamos a igualar la fuerza de resistencia del paracaídas (Fr) a el peso que mueve el paracaídas (Fg=mg) hacia el suelo.<img src="paracaidas_esquema_fuerzas.png" alt="paracaídas fuerzas" width="270" height="441" style="float: right;" /> Cuando estén igualadas deja de acelerar y la velocidad se convierte en constante, esa es la velocidad de caída.</p>
+<p>\( \sum F = m.a; F_{r}-F_{g}=m.a;\) como \(a=0\) para que \(V=cte \Rightarrow F_{r}=F_{g}\)</p>
+<p>Siendo \( F_{g}=m_{cansat}.g\) (peso del cansat) y \(F_{r}=\frac{1}{2}.r.C_{d}.A.V²\) (Fuerza de resistencia del paracaídas) dónde:</p>
+<ul>
+<li>r = densidad del aire (1,22 Kg/m3)</li>
+<li>Cd = coeficiente de resistencia aerodinámico en paracaídas de forma hemiesférico, su valor es 0,62. </li>
+<li>A = superficie del paracaídas (en nuestro caso semiesfera), \(A=2.\pi.R²\)</li>
+<li>V = velocidad de descenso</li>
+</ul>
+<p>Igualando ambas expresiones \(m_{cansat}.g=\frac{1}{2}.r.C_{d}.A.V²\), puedo despejar el área del paracaídas</p>
+<p>\(A=\frac {2.m_{cansat}.g}{r.C_{d}.V²}\), como \(A=2.\pi.R²\), igualando \(2.\pi.R²=\frac {2.m_{cansat}.g}{r.C_{d}.V²}\), podemos despejar el Radio del paracaídas, \(R=\sqrt{\frac {2.m_{cansat}.g}{r.C_{d}.V².2.\pi}}\)</p>
+<p>Para determinar la velocidad de caída y si la velocidad es constante (sin aceleración), tenemos que \(Velocidad=\frac{espacio}{tiempo}\), el cohete alcanza 1000 m de altura (espacio a recorrer) y el tiempo dijimos 120 s, por tanto …., ya tenemos la V. Además tenemos la masa de nuestro cansat (de 300g a 350g), con lo cual ya tenemos todo para calcular nuestro radio o diámetro de paracaídas.</p></div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper pblIdevice em_iDevice em_iDevice_activity" id="id36">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header"><h1 class="iDeviceTitle">Tarea: Calcula el radio de tu paracaídas</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta36_120_2" class="block iDevice_content">
+<dl class="pbl-task-info"><dt class="pbl-task-duration"><span>Duración:</span></dt><dd class="pbl-task-duration">10</dd><dt class="pbl-task-participants"><span>Agrupamiento:</span></dt><dd class="pbl-task-participants">6</dd></dl><div class="pbl-task-description"><p>Calcula el radio o diámetro con los datos reales de tu cansat, recuerda que tienes que saber masa y velocidad de caída.</p></div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="feedbackbutton" value="Mi solución" /></div><div class="feedback js-feedback js-hidden"><p>Como datos de partida voy a tener una m=350g=0,35Kg, y una velocidad de caída de \(velocidad=\frac{espacio}{tiempo}\), con un espacio (altura) de 1000 m y un vuelo de 120 segundos, nos queda \(velocidad=\frac{1000m}{120s}=8,33 \frac{m}{s}\). Sustituyendo los valores en la ecuación \(R=\sqrt{\frac {2.m_{cansat}.g}{r.C_{d}.V².2.\pi}}\), tenemos \(R=\sqrt{\frac {2.0,35Kg.9,81 \frac {m}{s²}}{1,22 \frac{Kg}{m³}.0,62.8,33² \frac{m²}{s²}.2.\pi}}=0,144m=144 mm\)</p></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div id="packageLicense" class="cc cc-by-sa">
+<p><span>Obra publicada con</span> <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Licencia Creative Commons Reconocimiento Compartir igual 4.0</a></p>
+</div>
+</section>
+</div>
+<div id='bottomPagination'>
+<nav class="pagination noprt">
+<a href="paracaidas.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="estructura_3d.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+</nav>
+</div>
+<footer id="siteFooter">Pedro Ruiz Fernández</footer></div>
+<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_adultos_js.js"></script></body></html>
