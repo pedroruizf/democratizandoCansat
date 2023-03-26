@@ -72,7 +72,7 @@
 <header id="nodeDecoration"><h1 id="nodeTitle">Comunicaciones LoRa</h1></header>
 <article class="iDevice_wrapper textIdevice em_iDevice" id="id13">
 <div class="iDevice emphasis1" >
-<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Primeras pruebas en LoRa</h1></header>
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Envío y recepción básicos en LoRa</h1></header>
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta13_120_2" class="block iDevice_content">
@@ -344,29 +344,149 @@ void loop() {
 </article>
 <article class="iDevice_wrapper textIdevice em_iDevice" id="id2">
 <div class="iDevice emphasis1" >
-<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Parámetros de transmisión en LoRa</h1></header>
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Parámetros de transmisión en LoRa.</h1></header>
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta2_120_2" class="block iDevice_content">
-<div class="exe-text"><p><span style="color: #ff0000;">¡EN DESARROLLO!</span></p>
+<div class="exe-text"><h4><span style="color: #ff0000;">¡ En Revisión !</span></h4>
 <h4>TX Power</h4>
-<h4>Frecuencia</h4>
-<h4>Spreading Factor (SF)</h4>
-<h4>Ancho de banda</h4>
-<h4>Coding Rate</h4>
+<p>Define la potencia de la transmisión de decibelios (dB) de nuestro dispositivo LoRa.</p>
+<p>La instrucción según nuestra librería para cambiar la potencia de transmisión es:</p>
+<ul>
+<li><em>LoRa.setTxPower(txPower)</em>; , dónde toma un valor por defecto de 17 dB, y se le puede asignar un rango de valores entre 2 y 20 dB.</li>
+</ul>
+<p>Un ejemplo que se pondría en el setup de nuestro programa para cambiar la potencia de emisión a 18 dB sería este:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setTxPower(18);</code></pre>
+</div>
+</div>
+<h4>Frecuencia (portadora)</h4>
+<p>Define la frecuencia portadora del medio utilizado tanto para las operaciones de transmisión como para las de escucha. También depende de la región operativa: en Europa, la frecuencia portadora operativa de LoRa es la banda ISM de la UE 863-870MHz.</p>
+<p>En el programa de Emisión o recepción queda definida por la línea de código siguiente colocada en setup:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.begin (866E6);</code></pre>
+</div>
+</div>
+<p>que indica que hemos comenzado una comunicación LoRa emitiendo o recibiendo a una frecuencia de 866MHz, y nos devuelve 1 si sucede y 0 si no. Podríamos cambiar el valor incluso con decimales según normativa entre 863 MHz y 870 MHz.</p>
+<p>Ejemplo de comienzo de emisión y recepción a 866.3 Mhz:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.begin (866.3E6);
+</code></pre>
+</div>
+</div>
+<p>Además, podemos cambiar la frecuencia de la transmisión con la siguiente orden de la librería:</p>
+<ul>
+<li><em>LoRa.setFrequency(frequency);</em></li>
+</ul>
+<p>Un ejemplo de cambio de frecuencia a 868Mhz podría ser:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setFrequency(868E6);</code></pre>
+</div>
+</div>
+<h4>Ancho de banda (BandWidth)</h4>
+<p>Representa el ancho de las señales de radiofrecuencia LoRa, es en realidad un rango de frecuencia que oscila respecto a la frecuencia base dónde se concentra la mayor potencia de la señal, que se usa para la transmisión de datos. Por lo general, se establece en 125 kHz, pero se puede aumentar hasta 250 kHz o incluso 500 kHz en algunas regiones para parámetros de modulación particulares.</p>
+<p>Un ancho de banda más alto proporciona una velocidad de datos más alta (por tanto, un tiempo más corto en el aire), pero una sensibilidad más baja (debido a la integración de ruido adicional).</p>
+<p>Un ancho de banda más bajo proporciona una sensibilidad más alta, pero una velocidad de datos más baja.</p>
+<p>La instrucción según nuestra librería para cambiar el ancho de banda es:</p>
+<ul>
+<li><em>LoRa.setSignalBandwidth(signalBandwidth)</em>, dónde el valor de ancho de banda toma un valor por defecto de 125E3 (125KHz), pero se le pueden dar el siguiente rango de valores (7.8E3, 10.4E3, 15.6E3, 20.8E3, 31.25E3, 41.7E3, 62.5E3, 125E3, 250E3, y 500E3).</li>
+</ul>
+<p>Ejemplo que se pondría en setup para que el ancho de banda sea de 250 KHz:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setSignalBandwidth(250E3);</code></pre>
+</div>
+</div>
+<h4>Spreading Factor (SF), factor de propagación o factor de ensanchamiento</h4>
+<p>Representa el parámetro de propagación del chirp*, que define cuántos chirps se envían por segundo. Oscila entre SF6 y SF12. En detalle, un SF grande aumenta el tiempo en el aire del símbolo (dato a transmitir) y el consumo de energía, mejorando así el rango de comunicación, pero reduciendo la velocidad de datos disponible y el tamaño de la carga útil de los mensajes.</p>
+<p>Cada aumento en el factor de ensanchamiento (SF) reduce a la mitad la velocidad de transmisión y, por lo tanto, duplica la duración de la transmisión y, en última instancia, el consumo de energía.</p>
+<p>La instrucción según nuestra librería para cambiar el spreading factor es:</p>
+<ul>
+<li><em>LoRa.setSpreadingFactor(spreadingFactor);</em>, dónde toma un valor por defecto de 7, pero se le pueden dar un rango de valores entre 6 y 12.<br />Ejemplo que se pondría en setup para el spreading factor sea 8:</li>
+</ul>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setSpreadingFactor(8);</code></pre>
+</div>
+</div>
+<p>* (chirp): son pulsos de frecuencia (ascendente o descendente), la secuencia de los mismos se usan para enviar símbolos (datos). </p>
+<h4>Coding Rate o razón de código:</h4>
+<p>Es la razón (cociente) de Forward Error Correction (FEC) usada por LoRa. FEC es el proceso donde son añadidos bits de corrección de error a los datos trasmitidos. La Razón de Código se refiere a la proporción de bits transmitidos que realmente llevan información con respecto a los totales. LoRa permite los siguientes valores \(CR=\{\frac{4}{5},\frac{4}{6},\frac{4}{7},\frac{4}{8}\}\), los cuales son calculados de la siguiente manera:<br />\(CR=\frac{4}{4+CR}\) donde \(CR=\{1,2,3,4\}\)</p>
+<p>La instrucción según nuestra librería para cambiar el coding rate es:</p>
+<ul>
+<li><em>LoRa.setCodingRate4(codingRateDenominator)</em>;, dónde toma un valor por defecto de 5, pero se le pueden dar un rango de valores entre 5 y 8.<br />Ejemplo que se pondría en setup para el coding rate sea 6:</li>
+</ul>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setCodingRate4(6); </code></pre>
+</div>
+</div>
 <h4>Preamble Length</h4>
-<h4>Sync word</h4>
-<p>Change the sync word of the radio.</p>
-<p>LoRa.setSyncWord(syncWord);<br />syncWord - byte value to use as the sync word, defaults to 0x12</p>
+<p>Son un numero de símbolos que se envían al principio de cada información enviada en LoRa.</p>
+<p>La instrucción según nuestra librería para cambiar el preamble length es:</p>
+<ul>
+<li><em>LoRa.setPreambleLength(preambleLength);</em> , dónde su valor por defecto son 8, pero se les puede dar un rango entre 6 y 65535 símbolos.</li>
+</ul>
+<p>Un ejemplo que se pondría en el setup de nuestro programa para cambiar el Preamble Length a 10 sería este:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setPreambleLength(10);</code></pre>
+</div>
+</div>
+<h4> Sync word</h4>
+<p>Establece la palabra de sincronismo de la comunicación de radio LoRa.</p>
+<p>La orden que usa la librería para establecerla es:</p>
+<ul>
+<li><em>LoRa.setSyncWord(syncWord);</em> , es un byte en hexadecimal cuyo valor por defecto es 0x12, y puede tomar un rango de valores entre 0 y 0xFF</li>
+</ul>
+<p>Un ejemplo para establecer la palabra de sincronismo en el setup de nuestro programa a 0xF3, sería: </p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.setSyncWord(0xF3);</code></pre>
+</div>
+</div>
 <h4>CRC</h4>
 <p>La verificación por redundancia cíclica​ (CRC) es un código de detección de errores usado frecuentemente en redes digitales y en dispositivos de almacenamiento para detectar cambios accidentales en los datos. Comprueba aritméticamente que los datos recibidos concuerdan con los enviados.</p>
-<p>Librería LoRa:</p>
-<p>Enable or disable CRC usage, by default a CRC is not used.</p>
+<p>En la librería que usamos de LoRa el CRC está deshabilitado y su habilitación o no, se hace con las siguientes instrucciones:</p>
 <ul>
-<li>LoRa.enableCrc();</li>
-<li>LoRa.disableCrc();</li>
+<li><em>LoRa.enableCrc();</em></li>
+<li><em>LoRa.disableCrc()</em>;</li>
 </ul>
-<p></p></div>
+<p>Un ejemplo para habilitar el CRC, en el setup de nuestro programa sería:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.enableCrc();</code></pre>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="iDevice_wrapper textIdevice em_iDevice" id="id41">
+<div class="iDevice emphasis1" >
+<header class="iDevice_header iDevice_header_noIcon"><h1 class="iDeviceTitle">Comunicación efectiva entre dispositivos LoRa</h1></header>
+<div class="iDevice_inner">
+<div class="iDevice_content_wrapper">
+<div id="ta41_120_2" class="block iDevice_content">
+<div class="exe-text"><p>Para que una comunicación pueda establecerse punto a punto entre dos dispositivos LoRa se debe cumplir todos estos requisitos:</p>
+<ul>
+<li>Que trabajen con los mismos valores simultáneamente de:
+<ul>
+<li>Frecuencia.</li>
+<li>Ancho de banda.</li>
+<li>Coding Rate.</li>
+<li>Spreading Factor.</li>
+<li>Preamble Length.</li>
+<li>Sync Word.</li>
+<li>CRC lo tengan igual (activado o desactivado)</li>
+</ul>
+</li>
+</ul></div>
 </div>
 </div>
 </div>
