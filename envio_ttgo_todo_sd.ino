@@ -128,7 +128,9 @@ void leesensores() {
     latitud = gps_lat;
     velocidad = gps_speed_kmph;
   }
-  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+  //es importante comentar que si no se pone nada a los valores numéricos te da una precisión de 2 decimales, a los valores del GPS de longitud
+  //y latitud le vamos a dar 8 decimales, poniendo (valor,8)
+  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud,8) + String(";") + String(latitud,8) + String(";") + String(velocidad) + String(";");
 }
 
 void envia_sd() {

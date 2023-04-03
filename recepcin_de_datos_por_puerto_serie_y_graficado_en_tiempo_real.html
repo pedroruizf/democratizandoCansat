@@ -2,21 +2,23 @@
 <html lang="es">
 <head>
 <link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="exe_highlighter.css" />
 <link rel="stylesheet" type="text/css" href="content.css" />
 <link rel="stylesheet" type="text/css" href="nav.css" />
 <meta http-equiv="content-type" content="text/html;  charset=utf-8" />
-<title>Software | Democratizando CANSAT </title>
+<title>Recepción de datos por puerto serie y graficado en tiempo real | Democratizando CANSAT </title>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <meta name="author" content="Pedro Ruiz Fernández" />
 <link rel="license" type="text/html" href="http://creativecommons.org/licenses/by-sa/4.0/" />
 <meta name="generator" content="eXeLearning 2.8 - exelearning.net" />
 <!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->
 <script type="text/javascript" src="exe_jquery.js"></script>
+<script type="text/javascript" src="exe_highlighter.js"></script>
 <script type="text/javascript" src="common_i18n.js"></script>
 <script type="text/javascript" src="common.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body class="exe-web-site exe-auto-math" id="exe-node-8"><script type="text/javascript">document.body.className+=" js"</script>
+<body class="exe-web-site exe-auto-math" id="exe-node-21"><script type="text/javascript">document.body.className+=" js"</script>
 <div id="content">
 <p id="skipNav"><a href="#main" class="sr-av">Saltar la navegación</a></p>
 <header id="header" ><div id="headerContent">Democratizando CANSAT</div></header>
@@ -41,7 +43,7 @@
       <li><a href="estructura_3d.html" class="no-ch">Estructura 3D</a></li>
    </ul>
    </li>
-   <li id="active"><a href="software.html" class="active daddy">Software</a>
+   <li class="current-page-parent"><a href="software.html" class="current-page-parent daddy">Software</a>
    <ul>
       <li><a href="ide_de_arduino.html" class="daddy">IDE de Arduino</a>
       <ul class="other-section">
@@ -55,7 +57,7 @@
       </ul>
       </li>
       <li><a href="integracin.html" class="no-ch">Integración</a></li>
-      <li><a href="recepcin_de_datos_por_puerto_serie_y_graficado_en_tiempo_real.html" class="no-ch">Recepción de datos por puerto serie y graficado en tiempo real</a></li>
+      <li id="active"><a href="recepcin_de_datos_por_puerto_serie_y_graficado_en_tiempo_real.html" class="active no-ch">Recepción de datos por puerto serie y graficado en tiempo real</a></li>
    </ul>
    </li>
    <li><a href="fuentes.html" class="no-ch">Fuentes</a></li>
@@ -63,16 +65,36 @@
 </nav>
 <div id='topPagination'>
 <nav class="pagination noprt">
-<a href="estructura_3d.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="ide_de_arduino.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="integracin.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="fuentes.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <div id="main-wrapper">
 <section id="main">
-<header id="nodeDecoration"><h1 id="nodeTitle">Software</h1></header>
-<article class="iDevice_wrapper textIdevice" id="id10">
+<header id="nodeDecoration"><h1 id="nodeTitle">Recepción de datos por puerto serie y graficado en tiempo real</h1></header>
+<article class="iDevice_wrapper textIdevice" id="id42">
 <div class="iDevice emphasis0" >
-<div id="ta10_126_2" class="block iDevice_content">
-<div class="exe-text"><p>Para programar la placa TTGO LoRa32 V2.1_1.6, vamos a usar tanto arduin oblocks como IDE de Arduino.</p>
+<div id="ta42_120_2" class="block iDevice_content">
+<div class="exe-text"><p>En el programa del receptor de LoRa, está el presente código:</p>
+<div class="highlighted-code language-c line-numbers">
+<div>
+<pre><code>int packetSize = LoRa.parsePacket();
+  if (packetSize) {
+    //received a packet
+    //Serial.print("Received packet ");
+
+    //read packet
+    while (LoRa.available()) {
+      LoRaData = LoRa.readString();
+      Serial.print(LoRaData);
+      Serial.print("\r\n");
+    }</code></pre>
+</div>
+</div>
+<p>La orden <em>LoRa.parsepacket()</em> es verdadera si le ha llegado un paquete de LoRa o falsa si no le ha llegado. Si llegan paquetes de LoRa (<em>LoRa.parsepacket()</em>), y mientras llegan datos (bytes) en la transmisión (<em>while (LoRa.available())</em>), estos datos son leídos (<em>LoRa.readString()</em>) y enviados a puerto serie (<em>Serial.print(LoRaData)</em>) con un retorno de carro (<em>Serial.print("\r\n")</em>).</p>
+<p>El receptor LoRa conectado al PC debe tener un programa lector de puerto serie, que permita grabar los datos en un fichero, para esta tarea en GNU/Linux proponemos usar Serial Port Terminal (<a href="https://manpages.ubuntu.com/manpages/jammy/man1/gtkterm.1.html" target="_blank" rel="noopener">GTKTerm</a>). Además vamos a utilizar un graficador en tiempo real llamado <a href="https://kst-plot.kde.org/" target="_blank" rel="noopener">KST</a>, que recogerá los datos del fichero grabado por gtkterm y en tiempo real los graficará.</p>
+<p>Pasamos a explicarlo todo en un vídeo de ejemplo:</p>
+<p><iframe width="1250" height="703" src="https://www.youtube.com/embed/QRZUYNzoEOQ" allowfullscreen="allowfullscreen"></iframe></p>
+<p></p>
 <p></p></div>
 </div>
 </div>
@@ -84,7 +106,7 @@
 </div>
 <div id='bottomPagination'>
 <nav class="pagination noprt">
-<a href="estructura_3d.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="ide_de_arduino.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="integracin.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="fuentes.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <footer id="siteFooter">Pedro Ruiz Fernández</footer></div>

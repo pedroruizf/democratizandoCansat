@@ -57,6 +57,7 @@
       </ul>
       </li>
       <li id="active"><a href="integracin.html" class="active no-ch">Integración</a></li>
+      <li><a href="recepcin_de_datos_por_puerto_serie_y_graficado_en_tiempo_real.html" class="no-ch">Recepción de datos por puerto serie y graficado en tiempo real</a></li>
    </ul>
    </li>
    <li><a href="fuentes.html" class="no-ch">Fuentes</a></li>
@@ -64,7 +65,7 @@
 </nav>
 <div id='topPagination'>
 <nav class="pagination noprt">
-<a href="sensores_en_arduin_oblocks.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="fuentes.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="sensores_en_arduin_oblocks.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="recepcin_de_datos_por_puerto_serie_y_graficado_en_tiempo_real.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <div id="main-wrapper">
@@ -207,7 +208,9 @@ void leesensores() {
     latitud = gps_lat;
     velocidad = gps_speed_kmph;
   }
-  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud) + String(";") + String(latitud) + String(";") + String(velocidad) + String(";");
+  //es importante comentar que si no se pone nada a los valores numéricos te da una precisión de 2 decimales, a los valores del GPS de longitud
+  //y latitud le vamos a dar 8 decimales, poniendo (valor,8)
+  s_registro = String(counter) + String(";") + String(presion) + String(";") + String(altitud) + String(";") + String(temperatura) + String(";") + String(humedad) + String(";") + String(longitud,8) + String(";") + String(latitud,8) + String(";") + String(velocidad) + String(";");
 }
 
 void envia_sd() {
@@ -290,7 +293,8 @@ void loop() {
   delay(1000);
 }</code></pre>
 </div>
-</div></div>
+</div>
+<p><br /><code></code></p></div>
 </div>
 </div>
 </article>
@@ -314,8 +318,8 @@ void loop() {
 </div>
 <div id='bottomPagination'>
 <nav class="pagination noprt">
-<a href="sensores_en_arduin_oblocks.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="fuentes.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
+<a href="sensores_en_arduin_oblocks.html" class="prev"><span><span>&laquo; </span>Anterior</span></a> <span class="sep">| </span><a href="recepcin_de_datos_por_puerto_serie_y_graficado_en_tiempo_real.html" class="next"><span>Siguiente<span> &raquo;</span></span></a>
 </nav>
 </div>
 <footer id="siteFooter">Pedro Ruiz Fernández</footer></div>
-<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_adultos_js.js"></script></body></html>
+<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_style_js.js"></script></body></html>
