@@ -16,7 +16,8 @@
 <script type="text/javascript" src="exe_highlighter.js"></script>
 <script type="text/javascript" src="common_i18n.js"></script>
 <script type="text/javascript" src="common.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" /></head>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
 <body class="exe-web-site exe-auto-math" id="exe-node-2"><script type="text/javascript">document.body.className+=" js"</script>
 <div id="content">
 <p id="skipNav"><a href="#main" class="sr-av">Saltar la navegación</a></p>
@@ -337,7 +338,13 @@ void loop() {
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta8_124_2" class="block iDevice_content">
-<div class="exe-text"><p>Los módulos TTGO LoRa ESP32 pueden enviar y recibir señales LoRa, que son señales digitales. Esto se debe a que la tecnología LoRa utiliza modulación de frecuencia para enviar datos digitales a través del aire. La información se convierte en una secuencia de pulsos digitales, y estos pulsos se utilizan para modular una señal de radiofrecuencia (RF) para su transmisión. Por lo tanto, las señales LoRa transmitidas y recibidas por los módulos TTGO LoRa ESP32 son señales digitales.</p></div>
+<div class="exe-text"><p>Los módulos TTG LoRa ESP32 pueden enviar y recibir señales LoRa (LongRange). LoRa es una tecnología de comunicación patentada, que está pensada para comunicaciones con un bajo consumo de energía, largo alcance y buena inmunidad frente al ruido, lo que la hace ideal para aplicaciones IoT.</p>
+<p>El sistema de comunicación LoRa esta basado en la modulación CSS (Chirp Spread Spectrum), que es una técnica de modulación de banda ancha, que utiliza chirps (pitidos), para codificar la información. Los chirps son como pitidos de un tono cuya frecuencia incrementa o decrementa linealmente con el tiempo a lo largo del ancho de banda utilizado (BW), simétrico a la frecuencia central y cada chirp representa un símbolo, que puede tener 2<sup>F</sup> valores, donde F representa el Spread Factor.</p>
+<p>En el sistema LoRa se transmiten paquetes de datos y estos paquetes de datos están formados por:</p>
+<ul>
+<li>Preámbulo (preamble), que está formado por un número de chirps variables y una palabra de sincronización (Sync Word). En recepción se comprueba si el preámbulo recibido coincide con el programado y si no coincide desecha el resto del mensaje.</li>
+<li>Cabecera, que puede ser explícita o implícita y en el caso de que sea explícita, contendrá información sobre el número de datos a enviar, la tasa de codificación de errores y la presencia de un código de verificación de errores.<br />Carga útil, que es la información neta que se desea transmitir. En Lora el número máximo de es de 255 bytes.</li>
+</ul></div>
 </div>
 </div>
 </div>
@@ -349,8 +356,32 @@ void loop() {
 <div class="iDevice_inner">
 <div class="iDevice_content_wrapper">
 <div id="ta2_120_2" class="block iDevice_content">
-<div class="exe-text"><h4><span style="color: #ff0000;">¡ En Revisión !</span></h4>
-<h4>TX Power</h4>
+<div class="exe-text"><h4>Inicialización del módulo LoRa</h4>
+<p>Nos permite inicializar el módulo LoRa para una frecuencia central determinada y nos fija una serie de parámetros por defecto, que son los siguientes:</p>
+<ul>
+<li>TxPower =14</li>
+<li>SpreadingFactor= 7</li>
+<li>Bandwith= 125E3 (125kHz)</li>
+<li>CodingRate= 5</li>
+<li>PreambleLength= 8</li>
+<li>SyncWord= 0x34</li>
+<li>EnableCRC= disable</li>
+</ul>
+<p>En el programa de Emisión o recepción queda definida por la línea de código siguiente colocada en setup:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.begin (866E6);</code></pre>
+</div>
+</div>
+<p>que indica que hemos comenzado una comunicación LoRa emitiendo o recibiendo a una frecuencia de 866MHz, y nos devuelve 1 si sucede y 0 si no. Podríamos cambiar el valor incluso con decimales según normativa entre 863 MHz y 870 MHz.</p>
+<p>Ejemplo de comienzo de emisión y recepción a 866.3 Mhz:</p>
+<div class="highlighted-code language-c">
+<div>
+<pre><code>LoRa.begin (866.3E6);</code></pre>
+</div>
+</div>
+<p>En el programa podemos modificar cualquiera de estos parámetros con las siguientes llamadas a la librería:</p>
+<h5>TX Power</h5>
 <p>Define la potencia de la transmisión de decibelios (dB) de nuestro dispositivo LoRa.</p>
 <p>La instrucción según nuestra librería para cambiar la potencia de transmisión es:</p>
 <ul>
@@ -362,23 +393,9 @@ void loop() {
 <pre><code>LoRa.setTxPower(18);</code></pre>
 </div>
 </div>
-<h4>Frecuencia (portadora)</h4>
+<h5>Frecuencia (portadora)</h5>
 <p>Define la frecuencia portadora del medio utilizado tanto para las operaciones de transmisión como para las de escucha. También depende de la región operativa: en Europa, la frecuencia portadora operativa de LoRa es la banda ISM de la UE 863-870MHz.</p>
-<p>En el programa de Emisión o recepción queda definida por la línea de código siguiente colocada en setup:</p>
-<div class="highlighted-code language-c">
-<div>
-<pre><code>LoRa.begin (866E6);</code></pre>
-</div>
-</div>
-<p>que indica que hemos comenzado una comunicación LoRa emitiendo o recibiendo a una frecuencia de 866MHz, y nos devuelve 1 si sucede y 0 si no. Podríamos cambiar el valor incluso con decimales según normativa entre 863 MHz y 870 MHz.</p>
-<p>Ejemplo de comienzo de emisión y recepción a 866.3 Mhz:</p>
-<div class="highlighted-code language-c">
-<div>
-<pre><code>LoRa.begin (866.3E6);
-</code></pre>
-</div>
-</div>
-<p>Además, podemos cambiar la frecuencia de la transmisión con la siguiente orden de la librería:</p>
+<p>Podemos cambiar la frecuencia de la transmisión con la siguiente orden de la librería:</p>
 <ul>
 <li><em>LoRa.setFrequency(frequency);</em></li>
 </ul>
@@ -388,7 +405,7 @@ void loop() {
 <pre><code>LoRa.setFrequency(868E6);</code></pre>
 </div>
 </div>
-<h4>Ancho de banda (BandWidth)</h4>
+<h5>Ancho de banda (BandWidth)</h5>
 <p>Representa el ancho de las señales de radiofrecuencia LoRa, es en realidad un rango de frecuencia que oscila respecto a la frecuencia base dónde se concentra la mayor potencia de la señal, que se usa para la transmisión de datos. Por lo general, se establece en 125 kHz, pero se puede aumentar hasta 250 kHz o incluso 500 kHz en algunas regiones para parámetros de modulación particulares.</p>
 <p>Un ancho de banda más alto proporciona una velocidad de datos más alta (por tanto, un tiempo más corto en el aire), pero una sensibilidad más baja (debido a la integración de ruido adicional).</p>
 <p>Un ancho de banda más bajo proporciona una sensibilidad más alta, pero una velocidad de datos más baja.</p>
@@ -402,7 +419,7 @@ void loop() {
 <pre><code>LoRa.setSignalBandwidth(250E3);</code></pre>
 </div>
 </div>
-<h4>Spreading Factor (SF), factor de propagación o factor de ensanchamiento</h4>
+<h5>Spreading Factor (SF), factor de propagación o factor de ensanchamiento</h5>
 <p>Representa el parámetro de propagación del chirp*, que define cuántos chirps se envían por segundo. Oscila entre SF6 y SF12. En detalle, un SF grande aumenta el tiempo en el aire del símbolo (dato a transmitir) y el consumo de energía, mejorando así el rango de comunicación, pero reduciendo la velocidad de datos disponible y el tamaño de la carga útil de los mensajes.</p>
 <p>Cada aumento en el factor de ensanchamiento (SF) reduce a la mitad la velocidad de transmisión y, por lo tanto, duplica la duración de la transmisión y, en última instancia, el consumo de energía.</p>
 <p>La instrucción según nuestra librería para cambiar el spreading factor es:</p>
@@ -415,7 +432,7 @@ void loop() {
 </div>
 </div>
 <p>* (chirp): son pulsos de frecuencia (ascendente o descendente), la secuencia de los mismos se usan para enviar símbolos (datos). </p>
-<h4>Coding Rate o razón de código:</h4>
+<h5>Coding Rate o razón de código:</h5>
 <p>Es la razón (cociente) de Forward Error Correction (FEC) usada por LoRa. FEC es el proceso donde son añadidos bits de corrección de error a los datos trasmitidos. La Razón de Código se refiere a la proporción de bits transmitidos que realmente llevan información con respecto a los totales. LoRa permite los siguientes valores \(CR=\{\frac{4}{5},\frac{4}{6},\frac{4}{7},\frac{4}{8}\}\), los cuales son calculados de la siguiente manera:<br />\(CR=\frac{4}{4+CR}\) donde \(CR=\{1,2,3,4\}\)</p>
 <p>La instrucción según nuestra librería para cambiar el coding rate es:</p>
 <ul>
@@ -426,7 +443,7 @@ void loop() {
 <pre><code>LoRa.setCodingRate4(6); </code></pre>
 </div>
 </div>
-<h4>Preamble Length</h4>
+<h5>Preamble Length</h5>
 <p>Son un numero de símbolos que se envían al principio de cada información enviada en LoRa.</p>
 <p>La instrucción según nuestra librería para cambiar el preamble length es:</p>
 <ul>
@@ -438,7 +455,7 @@ void loop() {
 <pre><code>LoRa.setPreambleLength(10);</code></pre>
 </div>
 </div>
-<h4> Sync word</h4>
+<h5> Sync word</h5>
 <p>Establece la palabra de sincronismo de la comunicación de radio LoRa.</p>
 <p>La orden que usa la librería para establecerla es:</p>
 <ul>
@@ -450,7 +467,7 @@ void loop() {
 <pre><code>LoRa.setSyncWord(0xF3);</code></pre>
 </div>
 </div>
-<h4>CRC</h4>
+<h5>CRC</h5>
 <p>La verificación por redundancia cíclica​ (CRC) es un código de detección de errores usado frecuentemente en redes digitales y en dispositivos de almacenamiento para detectar cambios accidentales en los datos. Comprueba aritméticamente que los datos recibidos concuerdan con los enviados.</p>
 <p>En la librería que usamos de LoRa el CRC está deshabilitado y su habilitación o no, se hace con las siguientes instrucciones:</p>
 <ul>
@@ -504,4 +521,4 @@ void loop() {
 </nav>
 </div>
 <footer id="siteFooter">Pedro Ruiz Fernández</footer></div>
-<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_fpd_js.js"></script></body></html>
+<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>Creado con eXeLearning<span> (Ventana nueva)</span></span></a></p><script type="text/javascript" src="_style_js.js"></script></body></html>
